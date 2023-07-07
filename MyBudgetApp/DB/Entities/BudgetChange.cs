@@ -10,4 +10,5 @@ public class BudgetChange
 {
     public string Name { get; set; }
     public decimal MoneyValue { get; set; }
+    public DateOnly? EventDate { get; set; }
 }

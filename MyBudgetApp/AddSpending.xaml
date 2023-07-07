@@ -12,8 +12,8 @@
         <StackPanel Orientation="Vertical" Margin="20 20 20 100">
             <TextBox x:Name="NameTextBox" Margin="20" materialDesign:HintAssist.Hint="Spending name"/>
             <TextBox x:Name="AmountTextBox" Margin="20" materialDesign:HintAssist.Hint="Amount"/>
-            <ComboBox x:Name="CategoryBox"  Margin="20" SelectionChanged="Category_SelectionChanged" materialDesign:HintAssist.Hint="Category">
-            </ComboBox>
+            <ComboBox x:Name="CategoryBox"  Margin="20" DropDownClosed="CategoryBox_DropDownClosed"  materialDesign:HintAssist.Hint="Category"/>
+            <DatePicker x:Name="DateBox"  Margin="20"  materialDesign:HintAssist.Hint="Choose date"/>
         </StackPanel>
         <Border  Background="#e6faeb" Margin="20 0 20 10" VerticalAlignment="Bottom" Height="60" CornerRadius="30" BorderThickness="2,2,2,2" >
             <Border.Effect>

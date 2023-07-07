@@ -45,7 +45,8 @@ namespace MyBudgetApp
                                     {
                                         Spending = s.Name,
                                         Value = s.MoneyValue,
-                                        Category = c.Name
+                                        Category = c.Name,
+                                        Date = s.EventDate
                                     };
                 OupputGrid.ItemsSource = SpendingsList.ToList();
             }
@@ -54,6 +55,16 @@ namespace MyBudgetApp
         private void OupputGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                db.Database.EnsureDeleted();
+                db.Database.EnsureCreated();
+                DataGridUpdate();
+            }
         }
     }
 }

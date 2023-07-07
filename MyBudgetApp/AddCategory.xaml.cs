@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace MyBudgetApp
 {
@@ -26,6 +27,7 @@ namespace MyBudgetApp
         {
             InitializeComponent();
             Parrent = parrent;
+            //((AddSpending)Parrent).CategoryBox.SelectedItem = null;
         }
 
         private void OnClickOk(object sender, RoutedEventArgs e)
@@ -33,16 +35,20 @@ namespace MyBudgetApp
             using (ApplicationContext db = new())
             {
                 string sName = CatNameTextBox.Text;
-                var tmp = new Category { Name = sName};
+                var tmp = new Category { Name = sName };
                 db.Categories.Add(tmp);
-                //MessageBox.Show(tmp.ToString());
 
                 db.SaveChanges();
             }
-            this.Parrent.Show();
-            ((AddSpending)(this.Parrent)).UpdateComboBox();
             Close();
 
+
         }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            this.Parrent.Show();
+            ((AddSpending)(this.Parrent)).UpdateComboBox(CatNameTextBox.Text);
+         }
     }
 }

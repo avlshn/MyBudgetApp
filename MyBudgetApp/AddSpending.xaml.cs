@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using DB;
 using DB.Entities;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace MyBudgetApp;
 
@@ -28,8 +29,10 @@ public partial class AddSpending : Window
     {
         InitializeComponent();
 
-        UpdateComboBox();
+        UpdateComboBox(null);
         Parrent = parrent;
+
+        DateBox.SelectedDate = DateTime.Now;
     }
 
     private void OnClickOk(object sender, RoutedEventArgs e)
@@ -43,7 +46,7 @@ public partial class AddSpending : Window
                 sAmount = 0;
             }
             db.Attach(selectedCategory);
-            var tmp = new Spending { Name = sName, MoneyValue = sAmount, spendingCategory = selectedCategory };
+            var tmp = new Spending { Name = sName, MoneyValue = sAmount, spendingCategory = selectedCategory, EventDate = DateOnly.FromDateTime(DateBox.SelectedDate ?? DateTime.Now)  };
             db.Spendings.Add(tmp);
             //MessageBox.Show(tmp.ToString());
 
@@ -55,7 +58,35 @@ public partial class AddSpending : Window
         
     }
 
-    private void Category_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    public void UpdateComboBox(string? newValue)
+    {
+        using (ApplicationContext db = new())
+        {
+            var categoriesList = db.Categories.ToList();
+            categoriesList.Add(ADD_CATEGORY);
+            CategoryBox.ItemsSource = categoriesList;
+            if (newValue != null)
+            {
+                foreach (Category cat in categoriesList)
+                {
+                    if (cat.Name == newValue) 
+                    { 
+                        CategoryBox.SelectedItem = cat;
+                        selectedCategory = cat;
+                        break;
+                    }
+                }
+            }
+        }
+        
+    }
+
+    private void Window_Closed(object sender, EventArgs e)
+    {
+        this.Parrent.Show();
+    }
+
+    private void CategoryBox_DropDownClosed(object sender, EventArgs e)
     {
         if (CategoryBox.SelectedItem is Category category)
         {
@@ -71,24 +102,9 @@ public partial class AddSpending : Window
                 //MessageBox.Show(selectedCategory.ToString() + selectedCategory.CategoryId);
             }
         }
-        else 
+        else
         {
-            
-        }
-    }
 
-    public void UpdateComboBox()
-    {
-        using (ApplicationContext db = new())
-        {
-            var categoriesList = db.Categories.ToList();
-            categoriesList.Add(ADD_CATEGORY);
-            CategoryBox.ItemsSource = categoriesList;
         }
-    }
-
-    private void Window_Closed(object sender, EventArgs e)
-    {
-        this.Parrent.Show();
     }
 }

@@ -18,6 +18,7 @@
             </Border.Effect>
             <StackPanel Orientation="Horizontal" Margin="30 10 30 10">
                 <Button Click="OnClickAdd" Content="Add"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                <Button Click="Button_Click"  Content="ClearBase"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
             </StackPanel>
         </Border>
     </Grid>

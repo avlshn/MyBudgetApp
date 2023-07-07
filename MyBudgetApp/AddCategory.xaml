@@ -6,7 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyBudgetApp"
         mc:Ignorable="d"
-        Title="Add Category" Height="450" Width="800">
+        Title="Add Category" Height="450" Width="800"
+        Closed="Window_Closed">
     <Grid>
         <StackPanel Orientation="Vertical" Margin="20 20 20 100">
             <TextBox x:Name="CatNameTextBox" Margin="20" materialDesign:HintAssist.Hint="Category Name"/>

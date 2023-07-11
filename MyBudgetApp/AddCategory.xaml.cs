@@ -23,6 +23,7 @@ namespace MyBudgetApp
     public partial class AddCategory : Window
     {
         private Window Parrent;
+        private bool isCategoryAdded = false;
         public AddCategory(Window parrent)
         {
             InitializeComponent();
@@ -40,6 +41,7 @@ namespace MyBudgetApp
 
                 db.SaveChanges();
             }
+            isCategoryAdded = true;
             Close();
 
 
@@ -48,7 +50,10 @@ namespace MyBudgetApp
         private void Window_Closed(object sender, EventArgs e)
         {
             this.Parrent.Show();
-            ((AddSpending)(this.Parrent)).UpdateComboBox(CatNameTextBox.Text);
-         }
+            if (isCategoryAdded)
+                ((AddSpending)(this.Parrent)).UpdateComboBox(CatNameTextBox.Text);
+            else
+                ((AddSpending)(this.Parrent)).UpdateComboBox(null);
+        }
     }
 }

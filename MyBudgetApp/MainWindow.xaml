@@ -9,7 +9,7 @@
         Title="MainWindow" Height="450" Width="800"
         x:Name="StartupWindow">
     <Grid x:Name="MainRoute">
-        <DataGrid x:Name="OupputGrid" Margin="20 20 20 100" BorderThickness="3" Background="LightGray" CellEditEnding="OupputGrid_CellEditEnding">
+        <DataGrid x:Name="OutputGrid" IsReadOnly="False" Margin="20 20 20 100" BorderThickness="3" Background="LightGray" CellEditEnding="OupputGrid_CellEditEnding">
             
         </DataGrid>
         <Border  Background="#e6faeb" Margin="20 0 20 10" VerticalAlignment="Bottom" MinHeight="60" CornerRadius="30" BorderThickness="2,2,2,2" >

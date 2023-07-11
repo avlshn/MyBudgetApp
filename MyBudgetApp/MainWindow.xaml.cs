@@ -1,4 +1,5 @@
 ﻿using DB;
+using DB.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,13 @@ using System.Windows.Shapes;
 
 namespace MyBudgetApp
 {
+    record class onScreen(string spending, decimal MoneyValue, string category, DateOnly date);
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -41,6 +44,7 @@ namespace MyBudgetApp
                 var SpendingsList = from s in db.Spendings
                                     join c in db.Categories
                                     on s.CategoryId equals c.CategoryId
+                                    orderby s.EventDate
                                     select new
                                     {
                                         Spending = s.Name,
@@ -48,7 +52,12 @@ namespace MyBudgetApp
                                         Category = c.Name,
                                         Date = s.EventDate
                                     };
-                OupputGrid.ItemsSource = SpendingsList.ToList();
+                var outList = new List<onScreen>();
+                foreach (var s in SpendingsList)
+                {
+                    outList.Add(new onScreen(s.Spending, s.Value, s.Category, s.Date ?? DateOnly.FromDateTime(DateTime.Now)));
+                }
+                OutputGrid.ItemsSource = outList;
             }
         }
 

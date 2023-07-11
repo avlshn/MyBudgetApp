@@ -48,12 +48,9 @@ public partial class AddSpending : Window
             db.Attach(selectedCategory);
             var tmp = new Spending { Name = sName, MoneyValue = sAmount, spendingCategory = selectedCategory, EventDate = DateOnly.FromDateTime(DateBox.SelectedDate ?? DateTime.Now)  };
             db.Spendings.Add(tmp);
-            //MessageBox.Show(tmp.ToString());
-
             db.SaveChanges();
         }
         ((MainWindow)(this.Parrent)).DataGridUpdate();
-        //this.Parrent.Show();
         Close();
         
     }
@@ -69,14 +66,16 @@ public partial class AddSpending : Window
             {
                 foreach (Category cat in categoriesList)
                 {
-                    if (cat.Name == newValue) 
-                    { 
+                    if (cat.Name == newValue)
+                    {
                         CategoryBox.SelectedItem = cat;
                         selectedCategory = cat;
                         break;
                     }
+                    
                 }
             }
+            else CategoryBox.SelectedItem = null;
         }
         
     }
@@ -99,7 +98,6 @@ public partial class AddSpending : Window
             else
             {
                 selectedCategory = category;
-                //MessageBox.Show(selectedCategory.ToString() + selectedCategory.CategoryId);
             }
         }
         else

@@ -17,7 +17,7 @@
                 <DropShadowEffect ShadowDepth="10"/>
             </Border.Effect>
             <StackPanel Orientation="Horizontal" Margin="30 10 30 10">
-                <Button Click="OnClickOk" Content="Ok"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                <Button Click="OnClickOk" Content="Ok"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20" IsDefault="True"></Button>
             </StackPanel>
         </Border>
     </Grid>

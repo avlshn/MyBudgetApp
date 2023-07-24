@@ -46,11 +46,11 @@ public partial class AddSpending : Window
                 sAmount = 0;
             }
             db.Attach(selectedCategory);
-            var tmp = new Spending { Name = sName, MoneyValue = sAmount, spendingCategory = selectedCategory, EventDate = DateOnly.FromDateTime(DateBox.SelectedDate ?? DateTime.Now)  };
+            var tmp = new Spending { Name = sName, MoneyValue = sAmount, spendingCategory = selectedCategory, EventDate = DateBox.SelectedDate ?? DateTime.Now };
             db.Spendings.Add(tmp);
             db.SaveChanges();
         }
-        ((MainWindow)(this.Parrent)).DataGridUpdate();
+        ((MainWindow)(this.Parrent)).RefreshData();
         Close();
         
     }
@@ -86,6 +86,27 @@ public partial class AddSpending : Window
     }
 
     private void CategoryBox_DropDownClosed(object sender, EventArgs e)
+    {
+        if (CategoryBox.SelectedItem is Category category)
+        {
+            if (category == ADD_CATEGORY)
+            {
+                AddCategory addCategory = new(this);
+                addCategory.Show();
+                Hide();
+            }
+            else
+            {
+                selectedCategory = category;
+            }
+        }
+        else
+        {
+
+        }
+    }
+
+    private void CategoryBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (CategoryBox.SelectedItem is Category category)
         {

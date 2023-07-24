@@ -1,6 +1,7 @@
 ﻿using DB;
 using DB.Entities;
 using Microsoft.EntityFrameworkCore;
+using MyBudgetApp.Charts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,29 +18,34 @@ using System.Windows.Shapes;
 
 namespace MyBudgetApp;
 
-//record class onScreen(int Id, string spending, decimal MoneyValue, string category, DateTime? date);
 /// <summary>
-/// Логика взаимодействия для MainWindow.xaml
+/// Логика взаимодействия для TestWindow.xaml
 /// </summary>
-public partial class MainWindow : Window
+public partial class TestWindow : Window
 {
     private readonly ApplicationContext _context = new();
     private CollectionViewSource spendingsViewSource;
     private Spending? SelectedSpending;
 
-    
-    public MainWindow()
+
+    public TestWindow(Window parrent)
     {
         InitializeComponent();
-        
-        spendingsViewSource=(CollectionViewSource)FindResource(nameof(spendingsViewSource));
+
+
+        List<string> Categories = _context.Categories.Select(p => p.Name).ToList();
+
+        double[] numbers = new double[] { 150, 130, 250};
+        string[] labels = Categories.ToArray();
+
+        DonutGraph.Source = ChartsDrawing.DonutPlot(numbers, labels);
+
+        spendingsViewSource = (CollectionViewSource)FindResource(nameof(spendingsViewSource));
     }
 
     private void OnClickAdd(object sender, RoutedEventArgs e)
     {
-        AddSpending addSpending = new(this);
-        addSpending.Show();
-        Hide();
+
     }
     #region DataGridUpdate
     //public void DataGridUpdate()
@@ -80,10 +86,7 @@ public partial class MainWindow : Window
 
     private void Open_Test_Window(object sender, RoutedEventArgs e)
     {
-        TestWindow testWindow = new TestWindow(this);
-        testWindow.Owner = this;
-        testWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-        testWindow.ShowDialog();
+
     }
 
     private void StartupWindow_Loaded(object sender, RoutedEventArgs e)
@@ -93,14 +96,16 @@ public partial class MainWindow : Window
 
     private void Button_Click_Delete(object sender, RoutedEventArgs e)
     {
-        _context.Spendings.Remove((Spending)OutputGrid.SelectedItem);
+        if ((Spending)OutputGrid.SelectedItem != null)
+            _context.Spendings.Remove((Spending)OutputGrid.SelectedItem);
+        else MessageBox.Show("No spending is selected");
         StartupWindow_Loaded(null, null);
         _context.SaveChanges();
     }
 
     private void DatePicker_DateChanged(object sender, RoutedEventArgs e)
     {
-        var tempSpending= (Spending)OutputGrid.SelectedItem;
+        var tempSpending = (Spending)OutputGrid.SelectedItem;
         tempSpending = _context.Spendings.FirstOrDefault(p => p.SpendingId == tempSpending.SpendingId);
         tempSpending.EventDate = ((DatePicker)sender).SelectedDate ?? DateTime.Now;
     }

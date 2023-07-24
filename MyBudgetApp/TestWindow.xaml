@@ -1,0 +1,84 @@
+﻿<Window x:Class="MyBudgetApp.TestWindow"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyBudgetApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <CollectionViewSource x:Key="spendingsViewSource"/>
+    </Window.Resources>
+    <Grid Margin="10">
+        <TabControl Grid.Row="0" TabStripPlacement="Top">
+            <TabItem Header="Spendings" VerticalAlignment="Top" Style="{StaticResource MaterialDesignTabItem}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="70" />
+                    </Grid.RowDefinitions>
+                    <DataGrid x:Name="OutputGrid" Margin="10" BorderThickness="3" Background="LightGray"
+                                AutoGenerateColumns="False" EnableRowVirtualization="True"
+                                ItemsSource="{Binding Source={StaticResource spendingsViewSource}}"
+                                RowDetailsVisibilityMode="VisibleWhenSelected"
+                                RenderTransformOrigin="0.488,0.251"
+                                CanUserAddRows="False" Grid.Row="0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Name}"
+                                            Header="Spending Name"
+                                            Width="*"/>
+                            <DataGridTextColumn Binding="{Binding MoneyValue}"
+                                            Header="Money spent"
+                                            Width="SizeToHeader"/>
+                            <DataGridComboBoxColumn x:Name="DataGridBox"
+                                            SelectedItemBinding="{Binding spendingCategory}"
+                                            Header="Spending Category"
+                                            Width="SizeToHeader"
+                                            />
+                            <DataGridTemplateColumn  Header="Date of spending">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DatePicker x:Name="ColomnDatePicker" SelectedDate="{Binding EventDate, StringFormat={}{0:dd.MM.yyyy}}" 
+                                                SelectedDateChanged="DatePicker_DateChanged"
+                                                FirstDayOfWeek="Monday" IsTodayHighlighted="True" 
+                                                SelectedDateFormat="Short"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                    <Border Grid.Row="1"  Background="#e6faeb" Margin="20 0 20 10" VerticalAlignment="Bottom" MinHeight="60" CornerRadius="30" BorderThickness="2,2,2,2" >
+                        <Border.Effect>
+                            <DropShadowEffect ShadowDepth="10"/>
+                        </Border.Effect>
+                        <StackPanel Orientation="Horizontal" Margin="30 10 30 10">
+                            <Button Click="OnClickAdd" Content="Add"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                            <Button Click="Button_Click_Clear"  Content="ClearBase"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                            <Button Click="Button_Click_Delete" Content="Delete"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                            <Button Click="Button_Click_Refresh" Content="Refresh"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Statistics">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Image x:Name="DonutGraph" Grid.Column="0" Grid.Row="0"/>
+
+                </Grid>
+            </TabItem>
+            
+        </TabControl>
+    </Grid>
+</Window>

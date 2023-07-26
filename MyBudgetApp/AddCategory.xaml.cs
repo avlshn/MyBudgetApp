@@ -36,7 +36,8 @@ namespace MyBudgetApp
             using (ApplicationContext db = new())
             {
                 string sName = CatNameTextBox.Text;
-                var tmp = new Category { Name = sName };
+                decimal sLimit = decimal.Parse(CatLimitTextBox.Text);
+                var tmp = new Category { Name = sName, CategoryLimit = sLimit };
                 db.Categories.Add(tmp);
 
                 db.SaveChanges();
@@ -49,11 +50,17 @@ namespace MyBudgetApp
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            this.Parrent.Show();
-            if (isCategoryAdded)
-                ((AddSpending)(this.Parrent)).UpdateComboBox(CatNameTextBox.Text);
-            else
-                ((AddSpending)(this.Parrent)).UpdateComboBox(null);
+            if (Parrent is AddSpending addSpending)
+            {
+                if (isCategoryAdded)
+                    addSpending.UpdateComboBox(CatNameTextBox.Text);
+                else
+                    addSpending.UpdateComboBox(null);
+            }
+            else if (Parrent is CategoriesWindow categoriesWindow)
+            {
+                categoriesWindow.RefreshData();
+            }
         }
     }
 }

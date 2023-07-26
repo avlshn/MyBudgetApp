@@ -10,8 +10,9 @@
         Closed="Window_Closed">
     <Grid>
         <StackPanel Orientation="Vertical" Margin="20 20 20 100">
-            <TextBox x:Name="CatNameTextBox" Margin="20" materialDesign:HintAssist.Hint="Category Name"/>
-            </StackPanel>
+            <TextBox x:Name="CatNameTextBox" Margin="20" materialDesign:HintAssist.Hint="Category name"/>
+            <TextBox x:Name="CatLimitTextBox" Margin="20" materialDesign:HintAssist.Hint="Category spending limit"/> 
+        </StackPanel>
         <Border  Background="#e6faeb" Margin="20 0 20 10" VerticalAlignment="Bottom" Height="60" CornerRadius="30" BorderThickness="2,2,2,2" >
             <Border.Effect>
                 <DropShadowEffect ShadowDepth="10"/>

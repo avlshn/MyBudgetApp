@@ -12,8 +12,8 @@ public class Spending : BudgetChange
     public int SpendingId { get; set; }
 
     [ForeignKey(nameof(Category))]
-    public int CategoryId { get; set; }
-    public virtual Category spendingCategory { get; set; }
+    public int? CategoryId { get; set; }
+    public virtual Category? spendingCategory { get; set; }
 
     //public override string ToString()
     //{

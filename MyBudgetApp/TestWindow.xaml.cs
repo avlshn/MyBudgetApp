@@ -33,14 +33,14 @@ public partial class TestWindow : Window
         InitializeComponent();
 
 
-        List<string> Categories = _context.Categories.Select(p => p.Name).ToList();
+        //List<string> Categories = _context.Categories.Select(p => p.Name).ToList();
 
-        double[] numbers = new double[] { 150, 130, 250};
-        string[] labels = Categories.ToArray();
+        //double[] numbers = new double[] { 150, 130, 250};
+        //string[] labels = Categories.ToArray();
 
-        DonutGraph.Source = ChartsDrawing.DonutPlot(numbers, labels);
+        //DonutGraph.Source = ChartsDrawing.DonutPlot(numbers, labels);
 
-        spendingsViewSource = (CollectionViewSource)FindResource(nameof(spendingsViewSource));
+        //spendingsViewSource = (CollectionViewSource)FindResource(nameof(spendingsViewSource));
     }
 
     private void OnClickAdd(object sender, RoutedEventArgs e)
@@ -96,11 +96,14 @@ public partial class TestWindow : Window
 
     private void Button_Click_Delete(object sender, RoutedEventArgs e)
     {
-        if ((Spending)OutputGrid.SelectedItem != null)
-            _context.Spendings.Remove((Spending)OutputGrid.SelectedItem);
-        else MessageBox.Show("No spending is selected");
-        StartupWindow_Loaded(null, null);
-        _context.SaveChanges();
+        double[] numbers;
+        string[] labels;
+
+        (numbers, labels) = ChartsCalculations.DonutGraphCalcs();
+
+        DonutGraph.Source = ChartsDrawing.DonutPlot(numbers, labels);
+
+        spendingsViewSource = (CollectionViewSource)FindResource(nameof(spendingsViewSource));
     }
 
     private void DatePicker_DateChanged(object sender, RoutedEventArgs e)

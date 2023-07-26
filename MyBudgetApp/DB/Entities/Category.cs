@@ -11,7 +11,7 @@ public class Category
 {
     public Category()
     {
-        
+        Name = "Choose category name";
     }
     public Category(string name)
     {
@@ -19,6 +19,8 @@ public class Category
     }
     public int CategoryId { get; set; }
     public string Name { get; set; }
+
+    public decimal? CategoryLimit { get; set; }
     public virtual ICollection<Spending> Spendings { get; set; } = new ObservableCollection<Spending>();
 
     public override string ToString()

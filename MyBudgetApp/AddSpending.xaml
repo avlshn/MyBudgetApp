@@ -6,13 +6,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyBudgetApp"
         mc:Ignorable="d"
-        Title="AddSpending" Height="450" Width="800"
-        Closed="Window_Closed">
+        Title="AddSpending" Height="450" Width="800">
     <Grid>
         <StackPanel Orientation="Vertical" Margin="20 20 20 100">
             <TextBox x:Name="NameTextBox" Margin="20" materialDesign:HintAssist.Hint="Spending name"/>
             <TextBox x:Name="AmountTextBox" Margin="20" materialDesign:HintAssist.Hint="Amount"/>
-            <ComboBox x:Name="CategoryBox"  Margin="20" DropDownClosed="CategoryBox_DropDownClosed"  materialDesign:HintAssist.Hint="Category" SelectionChanged="CategoryBox_SelectionChanged"/>
+            <ComboBox x:Name="CategoryBox"  Margin="20" materialDesign:HintAssist.Hint="Category" SelectionChanged="CategoryBox_SelectionChanged"/>
             <DatePicker x:Name="DateBox"  Margin="20"  materialDesign:HintAssist.Hint="Choose date"/>
         </StackPanel>
         <Border  Background="#e6faeb" Margin="20 0 20 10" VerticalAlignment="Bottom" Height="60" CornerRadius="30" BorderThickness="2,2,2,2" >

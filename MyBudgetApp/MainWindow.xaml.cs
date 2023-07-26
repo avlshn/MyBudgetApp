@@ -1,6 +1,7 @@
 ﻿using DB;
 using DB.Entities;
 using Microsoft.EntityFrameworkCore;
+using MyBudgetApp.Charts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,9 +38,11 @@ public partial class MainWindow : Window
 
     private void OnClickAdd(object sender, RoutedEventArgs e)
     {
-        AddSpending addSpending = new(this);
-        addSpending.Show();
-        Hide();
+        AddSpending addSpending = new AddSpending(this);
+        addSpending.Owner = this;
+        addSpending.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        addSpending.ShowDialog();
+        
     }
     #region DataGridUpdate
     //public void DataGridUpdate()
@@ -80,10 +83,10 @@ public partial class MainWindow : Window
 
     private void Open_Test_Window(object sender, RoutedEventArgs e)
     {
-        TestWindow testWindow = new TestWindow(this);
-        testWindow.Owner = this;
-        testWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-        testWindow.ShowDialog();
+        CategoriesWindow categoriesWindow = new CategoriesWindow();
+        categoriesWindow.Owner = this;
+        categoriesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        categoriesWindow.ShowDialog();
     }
 
     private void StartupWindow_Loaded(object sender, RoutedEventArgs e)
@@ -94,12 +97,13 @@ public partial class MainWindow : Window
     private void Button_Click_Delete(object sender, RoutedEventArgs e)
     {
         _context.Spendings.Remove((Spending)OutputGrid.SelectedItem);
-        StartupWindow_Loaded(null, null);
+        RefreshData();
         _context.SaveChanges();
     }
 
     private void DatePicker_DateChanged(object sender, RoutedEventArgs e)
     {
+        //TODO: Fix null reference exception in LINQ when adding first spending in empty DB
         var tempSpending= (Spending)OutputGrid.SelectedItem;
         tempSpending = _context.Spendings.FirstOrDefault(p => p.SpendingId == tempSpending.SpendingId);
         tempSpending.EventDate = ((DatePicker)sender).SelectedDate ?? DateTime.Now;
@@ -107,8 +111,6 @@ public partial class MainWindow : Window
 
     private void StartupWindow_Closed(object sender, EventArgs e)
     {
-        //OutputGrid.CommitEdit();
-        //OutputGrid.CommitEdit();
         _context.SaveChanges();
     }
 
@@ -126,5 +128,16 @@ public partial class MainWindow : Window
         _context.Spendings.Load();
         spendingsViewSource.Source = _context.Spendings.Local.ToObservableCollection();
         DataGridBox.ItemsSource = _context.Categories.Local.ToObservableCollection();
+
+        double[] numbers;
+        string[] labels;
+
+        (numbers, labels) = ChartsCalculations.DonutGraphCalcs();
+
+        DonutGraph.Source = ChartsDrawing.DonutPlot(numbers, labels);
+
+        spendingsViewSource = (CollectionViewSource)FindResource(nameof(spendingsViewSource));
     }
+
+ 
 }

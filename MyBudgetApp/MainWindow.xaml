@@ -13,55 +13,80 @@
 
     </Window.Resources>
     <Grid x:Name="MainRoute">
-        <DataGrid x:Name="OutputGrid" Margin="20 20 20 100" BorderThickness="3" Background="LightGray"
-                  AutoGenerateColumns="False" EnableRowVirtualization="True"
-                  ItemsSource="{Binding Source={StaticResource spendingsViewSource}}"
-                  RowDetailsVisibilityMode="VisibleWhenSelected"
-                  RenderTransformOrigin="0.488,0.251"
-                  CanUserAddRows="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Name}"
-                                    Header="Spending Name"
-                                    Width="*"/>
-                <DataGridTextColumn Binding="{Binding MoneyValue}"
-                                    Header="Money spent"
-                                    Width="SizeToHeader"/>
-                <DataGridComboBoxColumn x:Name="DataGridBox"
-                                    SelectedItemBinding="{Binding spendingCategory}"
-                                    Header="Spending Category"
-                                    Width="SizeToHeader"
-                                    />
-                <DataGridTemplateColumn  Header="Date of spending">
-                    <!--<DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBox Text="{Binding EventDate, StringFormat={}{0:dd.MM.yyyy}}"  />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>-->
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <DatePicker x:Name="ColomnDatePicker" SelectedDate="{Binding EventDate, StringFormat={}{0:dd.MM.yyyy}}" 
-                                        SelectedDateChanged="DatePicker_DateChanged"
-                                        FirstDayOfWeek="Monday" IsTodayHighlighted="True" 
-                                        SelectedDateFormat="Short"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
+        <TabControl Grid.Row="0" TabStripPlacement="Top">
+            <TabItem Header="Spendings" VerticalAlignment="Top" Style="{StaticResource MaterialDesignTabItem}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="70" />
+                    </Grid.RowDefinitions>
+                    <DataGrid x:Name="OutputGrid" Margin="20 20 20 10" BorderThickness="3" Background="LightGray"
+                      AutoGenerateColumns="False" EnableRowVirtualization="True"
+                      ItemsSource="{Binding Source={StaticResource spendingsViewSource}}"
+                      RowDetailsVisibilityMode="VisibleWhenSelected"
+                      RenderTransformOrigin="0.488,0.251"
+                      CanUserAddRows="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Name}"
+                                        Header="Spending Name"
+                                        Width="*"/>
+                            <DataGridTextColumn Binding="{Binding MoneyValue}"
+                                        Header="Money spent"
+                                        Width="SizeToHeader"/>
+                            <DataGridComboBoxColumn x:Name="DataGridBox"
+                                        SelectedItemBinding="{Binding spendingCategory}"
+                                        Header="Spending Category"
+                                        Width="SizeToHeader"
+                                        />
+                            <DataGridTemplateColumn  Header="Date of spending">
+                                <!--<DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding EventDate, StringFormat={}{0:dd.MM.yyyy}}"  />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>-->
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DatePicker x:Name="ColomnDatePicker" SelectedDate="{Binding EventDate, StringFormat={}{0:dd.MM.yyyy}}" 
+                                            SelectedDateChanged="DatePicker_DateChanged"
+                                            FirstDayOfWeek="Monday" IsTodayHighlighted="True" 
+                                            SelectedDateFormat="Short"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
 
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-            
-        </DataGrid>
-        <Border  Background="#e6faeb" Margin="20 0 20 10" VerticalAlignment="Bottom" MinHeight="60" CornerRadius="30" BorderThickness="2,2,2,2" >
-            <Border.Effect>
-                <DropShadowEffect ShadowDepth="10"/>
-            </Border.Effect>
-            <StackPanel Orientation="Horizontal" Margin="30 10 30 10">
-                <Button Click="OnClickAdd" Content="Add"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-                <Button Click="Button_Click_Clear"  Content="ClearBase"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-                <Button Click="Button_Click_Delete" Content="Delete"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-                <Button Click="Button_Click_Refresh" Content="Refresh"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-                <Button Click="Open_Test_Window" Content="Test"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-            </StackPanel>
-        </Border>
-        <Grid/>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                    <Border  Background="#e6faeb" Grid.Row="1" Margin="20 0 20 10" VerticalAlignment="Bottom" MinHeight="60" CornerRadius="30" BorderThickness="2,2,2,2" >
+                        <Border.Effect>
+                            <DropShadowEffect ShadowDepth="10"/>
+                        </Border.Effect>
+                        <StackPanel Orientation="Horizontal" Margin="30 10 30 10">
+                            <Button Click="OnClickAdd" Content="Add"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                            <Button Click="Button_Click_Clear"  Content="ClearBase"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                            <Button Click="Button_Click_Delete" Content="Delete"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                            <Button Click="Button_Click_Refresh" Content="Refresh"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                            <Button Click="Open_Test_Window" Content="Test"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Statistics">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Image x:Name="DonutGraph" Grid.Column="0" Grid.Row="0"/>
+
+                </Grid>
+            </TabItem>
+
+        </TabControl>
     </Grid>
 </Window>

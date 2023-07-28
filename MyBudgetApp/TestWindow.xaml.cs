@@ -96,14 +96,14 @@ public partial class TestWindow : Window
 
     private void Button_Click_Delete(object sender, RoutedEventArgs e)
     {
-        double[] numbers;
-        string[] labels;
+        //double[] numbers;
+        //string[] labels;
 
-        (numbers, labels) = ChartsCalculations.DonutGraphCalcs();
+        ////(numbers, labels) = ChartsCalculations.DonutGraphCalcs();
 
-        DonutGraph.Source = ChartsDrawing.DonutPlot(numbers, labels);
+        //DonutGraph.Source = ChartsDrawing.DonutPlot(numbers, labels);
 
-        spendingsViewSource = (CollectionViewSource)FindResource(nameof(spendingsViewSource));
+        //spendingsViewSource = (CollectionViewSource)FindResource(nameof(spendingsViewSource));
     }
 
     private void DatePicker_DateChanged(object sender, RoutedEventArgs e)

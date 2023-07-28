@@ -129,12 +129,13 @@ public partial class MainWindow : Window
         spendingsViewSource.Source = _context.Spendings.Local.ToObservableCollection();
         DataGridBox.ItemsSource = _context.Categories.Local.ToObservableCollection();
 
-        double[] numbers;
-        string[] labels;
+        List<double> numbers, categoriesLimit;
+        List<string> labels;
 
-        (numbers, labels) = ChartsCalculations.DonutGraphCalcs();
+        (numbers, labels, categoriesLimit) = ChartsCalculations.DonutGraphCalcs();
 
-        DonutGraph.Source = ChartsDrawing.DonutPlot(numbers, labels);
+        StackedBarGraph.Source = ChartsDrawing.StackedBarPlot(numbers, categoriesLimit, labels);
+        DonutGraph.Source = ChartsDrawing.DonutPlot(numbers.ToArray(), labels.ToArray());
 
         spendingsViewSource = (CollectionViewSource)FindResource(nameof(spendingsViewSource));
     }

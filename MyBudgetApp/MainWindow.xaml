@@ -83,6 +83,7 @@
                     </Grid.RowDefinitions>
 
                     <Image x:Name="DonutGraph" Grid.Column="0" Grid.Row="0"/>
+                    <Image x:Name="StackedBarGraph" Grid.Column="1" Grid.Row="0"/>
 
                 </Grid>
             </TabItem>

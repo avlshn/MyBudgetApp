@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyBudgetApp"
+        xmlns:p="clr-namespace:MyBudgetApp.Properties"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         x:Name="StartupWindow" Loaded="StartupWindow_Loaded" Closed="StartupWindow_Closed">
@@ -66,7 +67,7 @@
                             <Button Click="Button_Click_Clear"  Content="ClearBase"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
                             <Button Click="Button_Click_Delete" Content="Delete"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
                             <Button Click="Button_Click_Refresh" Content="Refresh"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-                            <Button Click="Open_Test_Window" Content="Test"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                            <Button Click="Open_Test_Window" Content="Categories"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -74,8 +75,8 @@
             <TabItem Header="Statistics">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="350"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -84,7 +85,28 @@
 
                     <Image x:Name="DonutGraph" Grid.Column="0" Grid.Row="0"/>
                     <Image x:Name="StackedBarGraph" Grid.Column="1" Grid.Row="0"/>
-
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Width="40" Text="   from" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <DatePicker x:Name="DateFrom" Margin="10" Width="100"/>
+                            <TextBlock Width="40" Text="   to" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <DatePicker x:Name="DateTo" Margin="10" Width="100"/>
+                            <TextBlock Text="  Select the dates for which the report is required" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox x:Name="ShowZeroSpending" Width="30" HorizontalAlignment="Left"
+                                      IsChecked="{Binding Source={x:Static p:Settings.Default}, Path = ShowZeroSpendings, Mode=TwoWay}"/>
+                            <TextBlock Text="Show zero spendings"/>
+                        </StackPanel>
+                        <Border  Background="#e6faeb" Grid.Row="1" Margin="20 0 20 10" VerticalAlignment="Bottom" MinHeight="60" CornerRadius="30" BorderThickness="2,2,2,2" >
+                            <Border.Effect>
+                                <DropShadowEffect ShadowDepth="10"/>
+                            </Border.Effect>
+                            <StackPanel Orientation="Horizontal" Margin="30 10 30 10">
+                                <Button Click="Button_Click_Refresh" Content="Refresh"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
                 </Grid>
             </TabItem>
 

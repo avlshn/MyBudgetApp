@@ -11,30 +11,37 @@ namespace MyBudgetApp.Charts;
 
 static internal class ChartsCalculations
 {
-    internal static (List<double> spends, List<string> catNames, List<double> categoriesLimit) DonutGraphCalcs()
+    internal static List<CategorySammary> DonutGraphCalcs(DateTime? dateFrom, DateTime? dateTo, bool isShowZeroSpending)
     {
-        List<Double> spends = new List<Double>(),
-            categoriesLimit = new List<double>();
-        List<string> names = new List<string>();
+        List<CategorySammary> CategoriesInfo = new List<CategorySammary>();
+
         List<Category> categories = new List<Category>();
+
+        if (dateFrom == null) dateFrom = DateTime.MinValue;
+        if (dateTo == null) dateTo = DateTime.MaxValue;
 
         using (ApplicationContext _context = new ApplicationContext())
         {
             _context.Spendings.LoadAsync();
             categories = _context.Categories.ToList();
+
             foreach (Category cat in categories)
             {
                 decimal catSpending = 0;
-                names.Add(cat.Name);
-                categoriesLimit.Add(Convert.ToDouble(cat.CategoryLimit));
                 foreach (Spending spend in cat.Spendings)
                 {
-                    catSpending += spend.MoneyValue;
+                    if (spend.EventDate>dateFrom && spend.EventDate<dateTo)
+                        catSpending += spend.MoneyValue;
                 }
-                spends.Add(Convert.ToDouble(catSpending));
+                if (isShowZeroSpending || catSpending > 0) 
+                    CategoriesInfo.Add(new CategorySammary(
+                        cat.Name, 
+                        Convert.ToDouble(cat.CategoryLimit), 
+                        Convert.ToDouble(catSpending)
+                        ));
             }
 
-            return (spends, names, categoriesLimit);
+            return CategoriesInfo;
         }
     }
 }

@@ -2,6 +2,7 @@
 using DB.Entities;
 using Microsoft.EntityFrameworkCore;
 using MyBudgetApp.Charts;
+using MyBudgetApp.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,13 +28,16 @@ public partial class MainWindow : Window
     private readonly ApplicationContext _context = new();
     private CollectionViewSource spendingsViewSource;
     private Spending? SelectedSpending;
-
+    private bool isShowZeroSpending;
     
+
+
     public MainWindow()
     {
         InitializeComponent();
         
         spendingsViewSource=(CollectionViewSource)FindResource(nameof(spendingsViewSource));
+
     }
 
     private void OnClickAdd(object sender, RoutedEventArgs e)
@@ -112,6 +116,7 @@ public partial class MainWindow : Window
     private void StartupWindow_Closed(object sender, EventArgs e)
     {
         _context.SaveChanges();
+        Settings.Default.Save();
     }
 
     private void Button_Click_Refresh(object sender, RoutedEventArgs e)
@@ -131,11 +136,12 @@ public partial class MainWindow : Window
 
         List<double> numbers, categoriesLimit;
         List<string> labels;
+        isShowZeroSpending = ShowZeroSpending.IsChecked == true;
+        List<CategorySammary> CatList = ChartsCalculations.DonutGraphCalcs(DateFrom.SelectedDate, DateTo.SelectedDate, isShowZeroSpending);
 
-        (numbers, labels, categoriesLimit) = ChartsCalculations.DonutGraphCalcs();
-
-        StackedBarGraph.Source = ChartsDrawing.StackedBarPlot(numbers, categoriesLimit, labels);
-        DonutGraph.Source = ChartsDrawing.DonutPlot(numbers.ToArray(), labels.ToArray());
+        
+        DonutGraph.Source = ChartsDrawing.DonutPlot(CatList);
+        StackedBarGraph.Source = ChartsDrawing.StackedBarPlot(CatList);
 
         spendingsViewSource = (CollectionViewSource)FindResource(nameof(spendingsViewSource));
     }

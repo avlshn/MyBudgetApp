@@ -62,5 +62,10 @@ namespace MyBudgetApp
                 categoriesWindow.RefreshData();
             }
         }
+
+        private void Button_Click_Cancel(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

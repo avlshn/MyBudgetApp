@@ -81,27 +81,6 @@ public partial class AddSpending : Window
     }
 
 
-    //private void CategoryBox_DropDownClosed(object sender, EventArgs e)
-    //{
-    //    if (CategoryBox.SelectedItem is Category category)
-    //    {
-    //        if (category == ADD_CATEGORY)
-    //        {
-    //            AddCategory addCategory = new(this);
-    //            addCategory.Show();
-    //            Hide();
-    //        }
-    //        else
-    //        {
-    //            selectedCategory = category;
-    //        }
-    //    }
-    //    else
-    //    {
-
-    //    }
-    //}
-
     private void CategoryBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (CategoryBox.SelectedItem is Category category)
@@ -109,8 +88,9 @@ public partial class AddSpending : Window
             if (category == ADD_CATEGORY)
             {
                 AddCategory addCategory = new(this);
-                addCategory.Show();
-                Hide();
+                addCategory.Owner = this;
+                addCategory.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                addCategory.ShowDialog();
             }
             else
             {
@@ -121,5 +101,10 @@ public partial class AddSpending : Window
         {
 
         }
+    }
+
+    private void Button_Click_Cancel(object sender, RoutedEventArgs e)
+    {
+        this.Close();
     }
 }

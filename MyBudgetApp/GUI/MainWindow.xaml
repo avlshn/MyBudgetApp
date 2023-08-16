@@ -7,11 +7,10 @@
         xmlns:local="clr-namespace:MyBudgetApp"
         xmlns:p="clr-namespace:MyBudgetApp.Properties"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="450" Width="800" WindowState="Maximized"
         x:Name="StartupWindow" Loaded="StartupWindow_Loaded" Closed="StartupWindow_Closed">
     <Window.Resources>
         <CollectionViewSource x:Key="spendingsViewSource"/>
-
     </Window.Resources>
     <Grid x:Name="MainRoute">
         <TabControl Grid.Row="0" TabStripPlacement="Top">
@@ -26,7 +25,7 @@
                       ItemsSource="{Binding Source={StaticResource spendingsViewSource}}"
                       RowDetailsVisibilityMode="VisibleWhenSelected"
                       RenderTransformOrigin="0.488,0.251"
-                      CanUserAddRows="False">
+                      CanUserAddRows="False" SelectionMode="Single">
                         <DataGrid.Columns>
                             <DataGridTextColumn Binding="{Binding Name}"
                                         Header="Spending Name"
@@ -36,20 +35,15 @@
                                         Width="SizeToHeader"/>
                             <DataGridComboBoxColumn x:Name="DataGridBox"
                                         SelectedItemBinding="{Binding spendingCategory}"
+                                        ItemsSource="{Binding }"
                                         Header="Spending Category"
-                                        Width="SizeToHeader"
-                                        />
+                                        Width="SizeToHeader"/>
                             <DataGridTemplateColumn  Header="Date of spending">
-                                <!--<DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBox Text="{Binding EventDate, StringFormat={}{0:dd.MM.yyyy}}"  />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>-->
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <DatePicker x:Name="ColomnDatePicker" SelectedDate="{Binding EventDate, StringFormat={}{0:dd.MM.yyyy}}" 
-                                            SelectedDateChanged="DatePicker_DateChanged"
-                                            FirstDayOfWeek="Monday" IsTodayHighlighted="True" 
+                                        <DatePicker x:Name="ColomnDatePicker" 
+                                            SelectedDate="{Binding EventDate, UpdateSourceTrigger=PropertyChanged,StringFormat={}{0:dd.MM.yyyy}}" 
+                                            FirstDayOfWeek="Monday" IsTodayHighlighted="True"
                                             SelectedDateFormat="Short"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -75,16 +69,21 @@
             <TabItem Header="Statistics">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="350"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="40*" Name="FirstColomn"/>
+                        <ColumnDefinition Width="60*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition Height="50*"/>
+                        <RowDefinition Height="50*" Name="SecondRow"/>
                     </Grid.RowDefinitions>
 
-                    <Image x:Name="DonutGraph" Grid.Column="0" Grid.Row="0"/>
-                    <Image x:Name="StackedBarGraph" Grid.Column="1" Grid.Row="0"/>
+                    <Image x:Name="DonutGraph" Grid.Column="0" Grid.Row="0"
+                           MouseLeftButtonUp="DonutGraph_MouseLeftButtonUp"
+                           VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Image x:Name="StackedBarGraph" Grid.Column="1" Grid.Row="0" 
+                           MouseLeftButtonUp="StackedBarGraph_MouseLeftButtonUp" 
+                           VerticalAlignment="Top" HorizontalAlignment="Right"/>
+
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Width="40" Text="   from" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -103,7 +102,9 @@
                                 <DropShadowEffect ShadowDepth="10"/>
                             </Border.Effect>
                             <StackPanel Orientation="Horizontal" Margin="30 10 30 10">
-                                <Button Click="Button_Click_Refresh" Content="Refresh"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                                <Button Click="Button_Click_Refresh" Content="Refresh"  
+                                        MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" 
+                                        FontSize="20"></Button>
                             </StackPanel>
                         </Border>
                     </StackPanel>

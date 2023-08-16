@@ -4,7 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using MyBudgetApp.Charts;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,15 +24,35 @@ namespace MyBudgetApp
     /// <summary>
     /// Логика взаимодействия для CategoriesWindow.xaml
     /// </summary>
-    public partial class CategoriesWindow : Window
+    public partial class CategoriesWindow : Window, INotifyPropertyChanged
     {
         private CollectionViewSource categoriesViewSource;
+
+        public CollectionViewSource CategoriesViewSource
+        {
+            get { return categoriesViewSource; }
+            set 
+            { 
+                categoriesViewSource = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private readonly ApplicationContext _context = new();
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         public CategoriesWindow()
         {
             InitializeComponent();
 
-            categoriesViewSource = (CollectionViewSource)FindResource(nameof(categoriesViewSource));
+            CategoriesViewSource = (CollectionViewSource)FindResource(nameof(categoriesViewSource));
         }
 
         public void RefreshData()
@@ -37,13 +60,12 @@ namespace MyBudgetApp
             _context.Database.EnsureCreated();
             _context.Categories.Load();
             _context.Spendings.Load();
-            categoriesViewSource.Source = _context.Categories.Local.ToObservableCollection();
-            //DataGridBox.ItemsSource = _context.Categories.Local.ToObservableCollection();
+            CategoriesViewSource.Source = _context.Categories.Local.ToObservableCollection();
 
             double[] numbers;
             string[] labels;
 
-            categoriesViewSource = (CollectionViewSource)FindResource(nameof(categoriesViewSource));
+            CategoriesViewSource = (CollectionViewSource)FindResource(nameof(categoriesViewSource));
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -65,10 +87,21 @@ namespace MyBudgetApp
             {
                 _context.Remove(category);
                 RefreshData();
-                _context.SaveChanges();
             }
             else MessageBox.Show("Select a category to remove");
             
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            _context.SaveChanges();
+            ((MainWindow)Owner).RefreshData();
+            
+        }
+
+        private void Button_Click_Close(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

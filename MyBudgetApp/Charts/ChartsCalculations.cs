@@ -30,7 +30,7 @@ static internal class ChartsCalculations
                 decimal catSpending = 0;
                 foreach (Spending spend in cat.Spendings)
                 {
-                    if (spend.EventDate>dateFrom && spend.EventDate<dateTo)
+                    if (spend.EventDate>=dateFrom && spend.EventDate<=dateTo)
                         catSpending += spend.MoneyValue;
                 }
                 if (isShowZeroSpending || catSpending > 0) 

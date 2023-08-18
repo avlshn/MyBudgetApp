@@ -7,10 +7,11 @@
         xmlns:local="clr-namespace:MyBudgetApp"
         xmlns:p="clr-namespace:MyBudgetApp.Properties"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowState="Maximized"
+        Title="MainWindow" Height="768" Width="1024" WindowState="Maximized"
         x:Name="StartupWindow" Loaded="StartupWindow_Loaded" Closed="StartupWindow_Closed">
     <Window.Resources>
-        <CollectionViewSource x:Key="spendingsViewSource"/>
+        <CollectionViewSource x:Key="spendingsViewSource" Filter="CollectionViewSource_Filter"
+                              IsLiveFilteringRequested="True"/>
     </Window.Resources>
     <Grid x:Name="MainRoute">
         <TabControl Grid.Row="0" TabStripPlacement="Top">
@@ -20,12 +21,67 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="70" />
                     </Grid.RowDefinitions>
-                    <DataGrid x:Name="OutputGrid" Margin="20 20 20 10" BorderThickness="3" Background="LightGray"
-                      AutoGenerateColumns="False" EnableRowVirtualization="True"
+                    <StackPanel Name="SidePanel" 
+                        HorizontalAlignment="Left" Width="10" Background="#aad3f0"
+                                MouseEnter="SidePanel_MouseEnter"
+                                MouseLeave="SidePanel_MouseLeave">
+
+                        <TextBox MinWidth="200" Name="SearchBox" 
+                                 TextChanged="SearchBox_TextChanged"
+                                 Height="30" Margin="5"
+                                 FontSize="16" Background="#e6f5ed"
+                                 materialDesign:HintAssist.Hint="Search by name"/>
+                        <CheckBox Checked="CheckBox_GroupByCategory_Checked"  Content="Group by category" 
+                                  Unchecked="CheckBox_GroupByCategory_Unchecked"
+                                  Height="40" Margin="5" VerticalContentAlignment="Center"
+                                  IsChecked="{Binding Source={x:Static p:Settings.Default}, Path = GroupSpendings, Mode=TwoWay}"/>
+                        
+                    </StackPanel>
+                    
+                    <DataGrid x:Name="OutputGrid"  BorderThickness="3" Background="LightGray"
+                      AutoGenerateColumns="False" EnableRowVirtualization="True" Margin="20 20 20 10"
                       ItemsSource="{Binding Source={StaticResource spendingsViewSource}}"
                       RowDetailsVisibilityMode="VisibleWhenSelected"
-                      RenderTransformOrigin="0.488,0.251"
-                      CanUserAddRows="False" SelectionMode="Single">
+                      RenderTransformOrigin="0.488,0.251" HorizontalAlignment="Right"
+                      CanUserAddRows="False" SelectionMode="Single"
+                      Width="{Binding ActualWidth, ElementName=BottomBorder}">
+
+                        <DataGrid.GroupStyle>
+                            
+                            <GroupStyle>
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="{x:Type GroupItem}">
+                                        <Setter Property="Margin" Value="0,0,0,5"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                    <Expander IsExpanded="False" Background="#FF112255" BorderBrush="#FF002255" Foreground="#FFEEEEEE" BorderThickness="1,1,1,5">
+                                                        <Expander.Header>
+                                                            <DockPanel HorizontalAlignment="Stretch">
+                                                                <TextBlock FontWeight="Bold" Text="{Binding Path=Name}" Margin="5,0,0,0" HorizontalAlignment="Stretch"/>
+                                                                <TextBlock FontWeight="Bold" Text="{Binding Path=ItemCount}" HorizontalAlignment="Right"/>
+                                                            </DockPanel>
+                                                        </Expander.Header>
+                                                        <Expander.Content>
+                                                            <ItemsPresenter />
+                                                        </Expander.Content>
+                                                    </Expander>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
+
+                        </DataGrid.GroupStyle>
+
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Foreground" Value="Black" />
+                                <Setter Property="Background" Value="White" />
+                            </Style>
+                        </DataGrid.RowStyle>
+
                         <DataGrid.Columns>
                             <DataGridTextColumn Binding="{Binding Name}"
                                         Header="Spending Name"
@@ -52,16 +108,19 @@
                         </DataGrid.Columns>
 
                     </DataGrid>
-                    <Border  Background="#e6faeb" Grid.Row="1" Margin="20 0 20 10" VerticalAlignment="Bottom" MinHeight="60" CornerRadius="30" BorderThickness="2,2,2,2" >
+                    <Border  Background="#e6faeb" Grid.Row="1" Margin="20 0 20 10" 
+                             VerticalAlignment="Bottom" MinHeight="60" CornerRadius="30"
+                             BorderThickness="2,2,2,2" Name="BottomBorder">
                         <Border.Effect>
                             <DropShadowEffect ShadowDepth="10"/>
                         </Border.Effect>
                         <StackPanel Orientation="Horizontal" Margin="30 10 30 10">
                             <Button Click="OnClickAdd" Content="Add"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-                            <Button Click="Button_Click_Clear"  Content="ClearBase"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-                            <Button Click="Button_Click_Delete" Content="Delete"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-                            <Button Click="Button_Click_Refresh" Content="Refresh"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-                            <Button Click="Open_Test_Window" Content="Categories"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                            <Button Click="Button_Click_Clear"  Content="ClearBase"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
+                            <Button Click="Button_Click_Delete" Content="Delete"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
+                            <Button Click="Button_Click_Refresh" Content="Refresh"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
+                            <Button Click="Open_Test_Window" Content="Categories"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
+                            
                         </StackPanel>
                     </Border>
                 </Grid>

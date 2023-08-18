@@ -34,5 +34,17 @@ namespace MyBudgetApp.Properties {
                 this["ShowZeroSpendings"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool GroupSpendings {
+            get {
+                return ((bool)(this["GroupSpendings"]));
+            }
+            set {
+                this["GroupSpendings"] = value;
+            }
+        }
     }
 }

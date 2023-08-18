@@ -5,10 +5,12 @@ using MyBudgetApp.Charts;
 using MyBudgetApp.Properties;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
@@ -27,10 +29,12 @@ public partial class MainWindow : Window
     private CollectionViewSource spendingsViewSource;
     private Spending? SelectedSpending;
     private bool isShowZeroSpending,
-                 isImageEnlarged = false;
+                 isImageEnlarged = false,
+                 isPanelExtended = false;
     
     private BeforeAnimation stackedBar, donut;
     private Duration animationDuration = new Duration(TimeSpan.FromSeconds(ANIMATION_DURATION));
+    double initialGridWidth;
 
 
     public MainWindow()
@@ -76,6 +80,7 @@ public partial class MainWindow : Window
     //}
     #endregion
 
+    //Debug option, remove later
     private void Button_Click_Clear(object sender, RoutedEventArgs e)
     {
         var result = MessageBox.Show("Are you sure you want to clear base?", "Clear base", 
@@ -102,6 +107,12 @@ public partial class MainWindow : Window
     private void StartupWindow_Loaded(object sender, RoutedEventArgs e)
     {
         RefreshData();
+        if (Settings.Default.GroupSpendings)
+        {
+            ICollectionView cvTasks = CollectionViewSource.GetDefaultView(OutputGrid.ItemsSource);
+            if (cvTasks != null && cvTasks.CanGroup == true)
+                spendingsViewSource.GroupDescriptions.Add(new PropertyGroupDescription("spendingCategory"));
+        }
     }
 
     private void Button_Click_Delete(object sender, RoutedEventArgs e)
@@ -132,6 +143,8 @@ public partial class MainWindow : Window
 
 
 
+
+    //Костыли, переделать
     public void RefreshData()
     {
         _context.Database.EnsureCreated();
@@ -153,6 +166,80 @@ public partial class MainWindow : Window
         StackedBarGraph.Source = ChartsDrawing.StackedBarPlot(CatList);
 
         spendingsViewSource = (CollectionViewSource)FindResource(nameof(spendingsViewSource));
+    }
+
+    private void CheckBox_GroupByCategory_Checked(object sender, RoutedEventArgs e)
+    {
+        if (OutputGrid != null)
+        {
+            ICollectionView cvTasks = CollectionViewSource.GetDefaultView(OutputGrid.ItemsSource);
+            if (cvTasks != null && cvTasks.CanGroup == true)
+                spendingsViewSource.GroupDescriptions.Add(new PropertyGroupDescription("spendingCategory"));
+        }
+    }
+
+    private void CheckBox_GroupByCategory_Unchecked(object sender, RoutedEventArgs e)
+    {
+        ICollectionView cvTasks = CollectionViewSource.GetDefaultView(OutputGrid.ItemsSource);
+        if (cvTasks != null) spendingsViewSource.GroupDescriptions.Clear();
+    }
+
+    private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
+    {
+        Spending s = e.Item as Spending;
+        if (s != null)
+        {
+            if (SearchBox == null || s.Name.ToLower().Contains(SearchBox.Text.ToLower()))
+            {
+                e.Accepted = true;
+            }
+            else e.Accepted = false;
+        }
+    }
+
+    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        CollectionViewSource.GetDefaultView(OutputGrid.ItemsSource).Refresh();
+    }
+
+    private void SidePanel_MouseEnter(object sender, MouseEventArgs e)
+    {
+        if (!isPanelExtended)
+        {
+            initialGridWidth = OutputGrid.ActualWidth;
+            DoubleAnimation panelExtend = new(), dataGridExtend = new();
+
+            panelExtend.To = 200;
+            panelExtend.Duration = animationDuration;
+            dataGridExtend.From = OutputGrid.ActualWidth;
+            dataGridExtend.To = OutputGrid.ActualWidth - 200;
+            dataGridExtend.Duration = animationDuration;
+         
+            SidePanel.BeginAnimation(WidthProperty, panelExtend);
+            OutputGrid.BeginAnimation(WidthProperty, dataGridExtend);
+
+            isPanelExtended = true;
+        }   
+    }
+
+    private void SidePanel_MouseLeave(object sender, MouseEventArgs e)
+    {
+        if (isPanelExtended)
+        {
+            Duration reverseDuration = new Duration(TimeSpan.FromSeconds(ANIMATION_DURATION*(initialGridWidth- OutputGrid.ActualWidth)/200));
+            DoubleAnimation panelExtend = new DoubleAnimation(SidePanel.ActualWidth, 10, reverseDuration);
+            DoubleAnimation dataGridExtend = new DoubleAnimation(OutputGrid.ActualWidth, initialGridWidth, reverseDuration);
+            dataGridExtend.Completed += (s, e) =>
+            {
+                SidePanel.BeginAnimation(WidthProperty, null);
+                OutputGrid.BeginAnimation(WidthProperty, null);
+                //OutputGrid.Width = Double.NaN;
+                isPanelExtended = false;
+            };
+            SidePanel.BeginAnimation(WidthProperty, panelExtend);
+            OutputGrid.BeginAnimation(WidthProperty, dataGridExtend);
+
+        }
     }
 
     private void StackedBarGraph_MouseLeftButtonUp(object sender, MouseEventArgs e)

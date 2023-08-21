@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ public class Category
     public string Name { get; set; }
 
     public decimal? CategoryLimit { get; set; }
+
+    public decimal? CategoryValue { get; set; }
     public virtual ICollection<Spending> Spendings { get; set; } = new ObservableCollection<Spending>();
 
     public override string ToString()

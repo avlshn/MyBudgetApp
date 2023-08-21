@@ -46,8 +46,12 @@ public partial class AddSpending : Window
                 sAmount = 0;
             }
             db.Attach(selectedCategory);
-            var tmp = new Spending { Name = sName, MoneyValue = sAmount, spendingCategory = selectedCategory, EventDate = DateBox.SelectedDate ?? DateTime.Now };
-            db.Spendings.Add(tmp);
+            //var tmp = new Spending { Name = sName, MoneyValue = sAmount, spendingCategory = selectedCategory, EventDate = DateBox.SelectedDate ?? DateTime.Now };
+            db.Spendings.Add(new Spending { 
+                Name = sName, 
+                MoneyValue = sAmount, 
+                spendingCategory = selectedCategory, 
+                EventDate = DateBox.SelectedDate ?? DateTime.Now });
             db.SaveChanges();
         }
         ((MainWindow)(this.Parrent)).RefreshData();

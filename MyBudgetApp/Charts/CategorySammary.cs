@@ -8,13 +8,15 @@ namespace MyBudgetApp.Charts
 {
     internal class CategorySammary
     {
-        public CategorySammary(string label, double limit, double value, double position = 0)
+        public CategorySammary(int id, string label, double limit, double value, double position = 0)
         {
+            ID = id;
             Label = label;
             Limit = limit;
             Value = value;
             Position = position;
         }
+        internal int ID { get; set; }
         internal string Label { get; set; }
         internal double Limit { get; set; }
         internal double Value { get; set; }

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Media.Imaging;
+using static MyBudgetApp.Other.Constants;
 
 namespace MyBudgetApp.Charts;
 
@@ -18,11 +19,12 @@ public static class ChartsDrawing
     {
         double[] values = CatList.Select(p => p.Value).ToArray();
         string[] labels = CatList.Select(p =>p.Label).ToArray();
+        
         //TODO: Default image if empty
         if (CatList.Count==0) return null;
         else
         {
-            var plt = new ScottPlot.Plot(600, 400);
+            var plt = new ScottPlot.Plot(DONUT_PLOT_WIDTH, DONUT_PLOT_HEIGHT);
 
             var pie = plt.AddPie(values);
             pie.Explode = true;
@@ -34,7 +36,7 @@ public static class ChartsDrawing
             pie.SliceLabels = labels;
             plt.Legend();
 
-            Bitmap bitmap = (plt.GetBitmap(false, 1));
+            Bitmap bitmap = (plt.GetBitmap(false, DONUT_PLOT_IMAGE_SCALE));
             BitmapImage bitmapImage = bitmap.ToBitmapImage();
             return bitmapImage;
         }
@@ -63,7 +65,7 @@ public static class ChartsDrawing
                 {
                     if (AxisMax < CatList[i].Value) AxisMax = CatList[i].Value;
                     position++;
-                    CatList[i].Position = position*10;
+                    CatList[i].Position = position * BARS_POSITION_DELTA;
                     OverspendedList.Add(CatList[i]);
                     CatList.RemoveAt(i);
                     i--;
@@ -79,18 +81,16 @@ public static class ChartsDrawing
             foreach (var cat in CatList)
             {
                 position++;
-                cat.Position = position*10;
+                cat.Position = position* BARS_POSITION_DELTA;
             }
 
-            //AxisMax = AxisMax * 1.5 /position;
 
-            //foreach (var cat in OverspendedList)
-            //{
-            //    cat.Position = cat.Position*AxisMax;
-            //}
-
-            var plt = new ScottPlot.Plot(800, 400);
-            plt.SetAxisLimits(xMin: 0, xMax: AxisMax*1.05, yMin: 0, yMax: position*10+10 );
+            var plt = new ScottPlot.Plot(STACKED_BAR_PLOT_WIDTH, STACKED_BAR_PLOT_HEIGHT);
+            plt.SetAxisLimits(xMin: 0,
+                xMax: AxisMax * MAX_Y_AXIS_SCALE,
+                yMin: 0,
+                yMax: position * BARS_POSITION_DELTA + BARS_POSITION_DELTA);
+            
             plt.Legend(location: Alignment.UpperRight);
 
 
@@ -107,12 +107,10 @@ public static class ChartsDrawing
 
 
 
-                //plt.XTicks(positions, labels);
-
                 var bar1 = plt.AddBar(values, positions, Color.Red); //plotting values than limits at the same positions 
                 var bar2 = plt.AddBar(limits, positions, Color.BlueViolet);
-                bar1.BarWidth = 8;
-                bar2.BarWidth = 8;
+                bar1.BarWidth = BAR_WIDTH;
+                bar2.BarWidth = BAR_WIDTH;
                 bar1.Orientation = Orientation.Horizontal;
                 bar2.Orientation = Orientation.Horizontal;
 
@@ -122,8 +120,6 @@ public static class ChartsDrawing
                 barLabelsPositions = null;
                 barLabelsText = null;
             }
-
-            //CatList = CatList.OrderByDescending(x => x.Value).ToList();
 
             if (CatList.Count > 0)
             {
@@ -145,25 +141,20 @@ public static class ChartsDrawing
                     barLabelsText = barLabelsText.Concat(labels).ToArray();
                 }
                 else barLabelsText = (string[])labels.Clone();
-                
+
+                //plotting values than limits at the same positions
                 var bar3 = plt.AddBar(limits, positions, Color.BlueViolet);
-                var bar4 = plt.AddBar(values, positions, Color.Blue); //plotting values than limits at the same positions 
-                bar3.BarWidth = 8;
-                bar4.BarWidth = 8;
+                var bar4 = plt.AddBar(values, positions, Color.Blue);  
+                bar3.BarWidth = BAR_WIDTH;
+                bar4.BarWidth = BAR_WIDTH;
                 bar3.Orientation = Orientation.Horizontal;
                 bar4.Orientation = Orientation.Horizontal;
 
             }
 
-            //for (int i = 0; i < barLabelsText.Length; i++)
-            //{
-            //    barLabelsText[i] = barLabelsText[i].Replace(" ", System.Environment.NewLine);
-            //}
-
-
             plt.YTicks(barLabelsPositions, barLabelsText);
 
-            Bitmap bitmap = (plt.GetBitmap(false, 2));
+            Bitmap bitmap = (plt.GetBitmap(false, STACKED_BAR_PLOT_IMAGE_SCALE));
             BitmapImage bitmapImage = bitmap.ToBitmapImage();
             return bitmapImage;
         }

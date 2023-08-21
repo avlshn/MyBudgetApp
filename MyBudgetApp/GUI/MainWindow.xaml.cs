@@ -6,14 +6,16 @@ using MyBudgetApp.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using static MyBudgetApp.Other.Constants;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace MyBudgetApp;
 
@@ -23,10 +25,9 @@ public record BeforeAnimation(double imageHeight, double imageWidth, GridLength 
 /// </summary>
 public partial class MainWindow : Window
 {
-    private const double ANIMATION_DURATION = 0.5;
-    
+       
     private readonly ApplicationContext _context = new();
-    private CollectionViewSource spendingsViewSource;
+    public CollectionViewSource spendingsViewSource;
     private Spending? SelectedSpending;
     private bool isShowZeroSpending,
                  isImageEnlarged = false,
@@ -35,6 +36,7 @@ public partial class MainWindow : Window
     private BeforeAnimation stackedBar, donut;
     private Duration animationDuration = new Duration(TimeSpan.FromSeconds(ANIMATION_DURATION));
     double initialGridWidth;
+ 
 
 
     public MainWindow()
@@ -106,6 +108,13 @@ public partial class MainWindow : Window
 
     private void StartupWindow_Loaded(object sender, RoutedEventArgs e)
     {
+        
+        //test
+        _context.Database.EnsureCreated();
+        _context.Categories.Load();
+        _context.Spendings.Load();
+        spendingsViewSource.Source = _context.Spendings.Local.ToObservableCollection();
+
         RefreshData();
         if (Settings.Default.GroupSpendings)
         {
@@ -144,28 +153,25 @@ public partial class MainWindow : Window
 
 
 
-    //Костыли, переделать
+
     public void RefreshData()
     {
-        _context.Database.EnsureCreated();
         _context.Categories.Load();
         _context.Spendings.Load();
-        spendingsViewSource.Source = _context.Spendings.Local.ToObservableCollection();
-        DataGridBox.ItemsSource = _context.Categories.ToList();
 
+        DataGridBox.ItemsSource = _context.Categories.ToList();
 
         List<double> numbers, categoriesLimit;
         List<string> labels;
         isShowZeroSpending = ShowZeroSpending.IsChecked == true;
-        List<CategorySammary> CatList = ChartsCalculations.DonutGraphCalcs(DateFrom.SelectedDate,
-                                                                           DateTo.SelectedDate,   
-                                                                           isShowZeroSpending);
-
-        
+        List<CategorySammary>  CatList = ChartsCalculations.DonutGraphCalcs(DateFrom.SelectedDate,
+                                                     DateTo.SelectedDate,   
+                                                     isShowZeroSpending);
+                
         DonutGraph.Source = ChartsDrawing.DonutPlot(CatList);
         StackedBarGraph.Source = ChartsDrawing.StackedBarPlot(CatList);
 
-        spendingsViewSource = (CollectionViewSource)FindResource(nameof(spendingsViewSource));
+
     }
 
     private void CheckBox_GroupByCategory_Checked(object sender, RoutedEventArgs e)
@@ -186,21 +192,28 @@ public partial class MainWindow : Window
 
     private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
     {
+        DateTime? dateFrom = GridDateFrom.SelectedDate,
+            dateTo = GridDateTo.SelectedDate;
+        
+        if (dateFrom == null) dateFrom = DateTime.MinValue;
+        if (dateTo == null) dateTo = DateTime.MaxValue;
+
         Spending s = e.Item as Spending;
         if (s != null)
         {
-            if (SearchBox == null || s.Name.ToLower().Contains(SearchBox.Text.ToLower()))
+            if ((s.EventDate >= dateFrom) && (s.EventDate <= dateTo))
             {
-                e.Accepted = true;
+                if (SearchBox == null || s.Name.ToLower().Contains(SearchBox.Text.ToLower()))
+                {
+                    e.Accepted = true;
+                }
+                else e.Accepted = false;
             }
             else e.Accepted = false;
         }
     }
 
-    private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        CollectionViewSource.GetDefaultView(OutputGrid.ItemsSource).Refresh();
-    }
+
 
     private void SidePanel_MouseEnter(object sender, MouseEventArgs e)
     {
@@ -209,10 +222,10 @@ public partial class MainWindow : Window
             initialGridWidth = OutputGrid.ActualWidth;
             DoubleAnimation panelExtend = new(), dataGridExtend = new();
 
-            panelExtend.To = 200;
+            panelExtend.To = SIDE_PANEL_WIDTH;
             panelExtend.Duration = animationDuration;
             dataGridExtend.From = OutputGrid.ActualWidth;
-            dataGridExtend.To = OutputGrid.ActualWidth - 200;
+            dataGridExtend.To = OutputGrid.ActualWidth - SIDE_PANEL_WIDTH;
             dataGridExtend.Duration = animationDuration;
          
             SidePanel.BeginAnimation(WidthProperty, panelExtend);
@@ -222,12 +235,41 @@ public partial class MainWindow : Window
         }   
     }
 
+    private void FilterChanged(object sender, TextChangedEventArgs e)
+    {
+        CollectionViewSource.GetDefaultView(OutputGrid.ItemsSource).Refresh();
+    }
+
+    private void FilterChanged(object sender, SelectionChangedEventArgs e)
+    {
+        //Calculating all spendings for selected period
+        List<CategorySammary> CatList = ChartsCalculations.DonutGraphCalcs(GridDateFrom.SelectedDate, GridDateTo.SelectedDate, true);
+        foreach (var c in CatList)
+        {
+            Category? cat = _context.Categories.SingleOrDefault(p => p.CategoryId == c.ID);
+            if (cat != null)
+            {
+                cat.CategoryValue = (Decimal)c.Value;
+            }
+        }
+
+        _context.SaveChanges();
+
+        CollectionViewSource.GetDefaultView(OutputGrid.ItemsSource).Refresh();
+    }
+
+    private void Button_Click_Clear_Date_Filter(object sender, RoutedEventArgs e)
+    {
+        GridDateFrom.SelectedDate = null;
+        GridDateTo.SelectedDate = null;
+    }
+
     private void SidePanel_MouseLeave(object sender, MouseEventArgs e)
     {
         if (isPanelExtended)
         {
-            Duration reverseDuration = new Duration(TimeSpan.FromSeconds(ANIMATION_DURATION*(initialGridWidth- OutputGrid.ActualWidth)/200));
-            DoubleAnimation panelExtend = new DoubleAnimation(SidePanel.ActualWidth, 10, reverseDuration);
+            Duration reverseDuration = new Duration(TimeSpan.FromSeconds(ANIMATION_DURATION*(initialGridWidth- OutputGrid.ActualWidth)/ SIDE_PANEL_WIDTH));
+            DoubleAnimation panelExtend = new DoubleAnimation(SidePanel.ActualWidth, SIDE_PANEL_MINIMIZED_WIDTH, reverseDuration);
             DoubleAnimation dataGridExtend = new DoubleAnimation(OutputGrid.ActualWidth, initialGridWidth, reverseDuration);
             dataGridExtend.Completed += (s, e) =>
             {
@@ -269,8 +311,8 @@ public partial class MainWindow : Window
             heightAnimation.Completed += (s, e) =>
             {
                 isImageEnlarged = false;
-                FirstColomn.Width = new GridLength(40, GridUnitType.Star);
-                SecondRow.Height = new GridLength(50, GridUnitType.Star);
+                FirstColomn.Width = new GridLength(FIRST_COLOMN_WIDTH_PERCENTAGE, GridUnitType.Star);
+                SecondRow.Height = new GridLength(SECOND_ROW_HEIGHT_PERCANTAGE, GridUnitType.Star);
                 StackedBarGraph.BeginAnimation(HeightProperty, null);
                 StackedBarGraph.BeginAnimation(WidthProperty, null);
             };
@@ -306,8 +348,8 @@ public partial class MainWindow : Window
             heightAnimation.Completed += (s, e) =>
             {
                 isImageEnlarged = false;
-                FirstColomn.Width = new GridLength(40, GridUnitType.Star);
-                SecondRow.Height = new GridLength(50, GridUnitType.Star);
+                FirstColomn.Width = new GridLength(FIRST_COLOMN_WIDTH_PERCENTAGE, GridUnitType.Star);
+                SecondRow.Height = new GridLength(SECOND_ROW_HEIGHT_PERCANTAGE, GridUnitType.Star);
                 DonutGraph.BeginAnimation(HeightProperty, null);
                 DonutGraph.BeginAnimation(WidthProperty, null);
             };

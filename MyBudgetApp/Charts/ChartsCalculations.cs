@@ -35,6 +35,7 @@ static internal class ChartsCalculations
                 }
                 if (isShowZeroSpending || catSpending > 0) 
                     CategoriesInfo.Add(new CategorySammary(
+                        cat.CategoryId,
                         cat.Name, 
                         Convert.ToDouble(cat.CategoryLimit), 
                         Convert.ToDouble(catSpending)

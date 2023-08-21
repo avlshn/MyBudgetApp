@@ -24,10 +24,11 @@
                     <StackPanel Name="SidePanel" 
                         HorizontalAlignment="Left" Width="10" Background="#aad3f0"
                                 MouseEnter="SidePanel_MouseEnter"
-                                MouseLeave="SidePanel_MouseLeave">
+                                MouseLeave="SidePanel_MouseLeave"
+                                Margin="0 0 0 10">
 
                         <TextBox MinWidth="200" Name="SearchBox" 
-                                 TextChanged="SearchBox_TextChanged"
+                                 TextChanged="FilterChanged"
                                  Height="30" Margin="5"
                                  FontSize="16" Background="#e6f5ed"
                                  materialDesign:HintAssist.Hint="Search by name"/>
@@ -35,7 +36,17 @@
                                   Unchecked="CheckBox_GroupByCategory_Unchecked"
                                   Height="40" Margin="5" VerticalContentAlignment="Center"
                                   IsChecked="{Binding Source={x:Static p:Settings.Default}, Path = GroupSpendings, Mode=TwoWay}"/>
-                        
+                        <TextBlock Text="Select the dates to filter spendings" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <DatePicker x:Name="GridDateFrom" Margin="10" Width="100" 
+                                    materialDesign:HintAssist.Hint="From"
+                                    SelectedDateChanged="FilterChanged"/>
+                        <DatePicker x:Name="GridDateTo" Margin="10" Width="100" 
+                                    materialDesign:HintAssist.Hint="To"
+                                    SelectedDateChanged="FilterChanged"/>
+                        <Button Content="Clear" Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                                BorderThickness="1" Click="Button_Click_Clear_Date_Filter"/>
+
+
                     </StackPanel>
                     
                     <DataGrid x:Name="OutputGrid"  BorderThickness="3" Background="LightGray"
@@ -59,6 +70,7 @@
                                                         <Expander.Header>
                                                             <DockPanel HorizontalAlignment="Stretch">
                                                                 <TextBlock FontWeight="Bold" Text="{Binding Path=Name}" Margin="5,0,0,0" HorizontalAlignment="Stretch"/>
+                                                                <TextBlock FontWeight="Bold" Text="{Binding Source={StaticResource spendingsViewSource}, Path=CategoryValue}" HorizontalAlignment="Right"/>
                                                                 <TextBlock FontWeight="Bold" Text="{Binding Path=ItemCount}" HorizontalAlignment="Right"/>
                                                             </DockPanel>
                                                         </Expander.Header>

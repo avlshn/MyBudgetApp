@@ -2,6 +2,7 @@
 using DB.Entities;
 using Microsoft.EntityFrameworkCore;
 using MyBudgetApp.Charts;
+using MyBudgetApp.GUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -24,84 +25,83 @@ namespace MyBudgetApp
     /// <summary>
     /// Логика взаимодействия для CategoriesWindow.xaml
     /// </summary>
-    public partial class CategoriesWindow : Window, INotifyPropertyChanged
+    public partial class CategoriesWindow : Window
     {
-        private CollectionViewSource categoriesViewSource;
+        //private CollectionViewSource categoriesViewSource;
 
-        public CollectionViewSource CategoriesViewSource
-        {
-            get { return categoriesViewSource; }
-            set 
-            { 
-                categoriesViewSource = value;
-                OnPropertyChanged();
-            }
-        }
+        //public CollectionViewSource CategoriesViewSource
+        //{
+        //    get { return categoriesViewSource; }
+        //    set 
+        //    { 
+        //        categoriesViewSource = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
 
-        private readonly ApplicationContext _context = new();
+        //private readonly ApplicationContext _context = new();
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        //public event PropertyChangedEventHandler? PropertyChanged;
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        //private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        //{
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //}
 
         public CategoriesWindow()
         {
             InitializeComponent();
 
-            CategoriesViewSource = (CollectionViewSource)FindResource(nameof(categoriesViewSource));
         }
 
-        public void RefreshData()
-        {
-            _context.Database.EnsureCreated();
-            _context.Categories.Load();
-            _context.Spendings.Load();
-            CategoriesViewSource.Source = _context.Categories.Local.ToObservableCollection();
+        //public void RefreshData()
+        //{
+        //    _context.Database.EnsureCreated();
+        //    _context.Categories.Load();
+        //    _context.Spendings.Load();
+        //    CategoriesViewSource.Source = _context.Categories.Local.ToObservableCollection();
 
-            double[] numbers;
-            string[] labels;
+        //    double[] numbers;
+        //    string[] labels;
 
-            CategoriesViewSource = (CollectionViewSource)FindResource(nameof(categoriesViewSource));
-        }
+        //    CategoriesViewSource = (CollectionViewSource)FindResource(nameof(categoriesViewSource));
+        //}
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            RefreshData();
-        }
+        //private void Window_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    RefreshData();
+        //}
 
-        private void Button_Click_Add(object sender, RoutedEventArgs e)
-        {
-            AddCategory addCategory = new AddCategory(this);
-            addCategory.Owner = this;
-            addCategory.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            addCategory.ShowDialog();
-        }
+        //private void Button_Click_Add(object sender, RoutedEventArgs e)
+        //{
+        //    AddCategory addCategory = new AddCategory(this);
+        //    addCategory.Owner = this;
+        //    addCategory.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+        //    addCategory.ShowDialog();
+        //}
 
-        private void Button_Click_Delete(object sender, RoutedEventArgs e)
-        {
-            if (CategoriesGrid.SelectedItem is Category category)
-            {
-                _context.Remove(category);
-                RefreshData();
-            }
-            else MessageBox.Show("Select a category to remove");
+        //private void Button_Click_Delete(object sender, RoutedEventArgs e)
+        //{
+        //    if (CategoriesGrid.SelectedItem is Category category)
+        //    {
+        //        _context.Remove(category);
+        //        RefreshData();
+        //    }
+        //    else MessageBox.Show("Select a category to remove");
             
-        }
+        //}
 
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            _context.SaveChanges();
-            ((MainWindow)Owner).RefreshData();
+        //private void Window_Closed(object sender, EventArgs e)
+        //{
+        //    _context.SaveChanges();
+        //    //((MainWindow)Owner).RefreshData();
             
-        }
+        //}
 
-        private void Button_Click_Close(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
+        //private void Button_Click_Close(object sender, RoutedEventArgs e)
+        //{
+        //    this.Close();
+        //}
     }
 }

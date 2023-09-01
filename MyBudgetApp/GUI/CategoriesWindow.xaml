@@ -6,11 +6,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyBudgetApp"
         mc:Ignorable="d"
-        Title="CategoriesWindow" Height="450" Width="800"
-        Loaded="Window_Loaded" Closed="Window_Closed">
-    <Window.Resources>
-        <CollectionViewSource x:Key="categoriesViewSource"/>
-    </Window.Resources>
+        Title="Categories" Height="450" Width="800"
+        DataContext="{StaticResource GlobalViewModel}">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -20,7 +18,7 @@
                   Margin="10" Background="LightGray" AutoGenerateColumns="False"
                   RowDetailsVisibilityMode="VisibleWhenSelected" 
                   RenderTransformOrigin="0.488,0.251" CanUserAddRows="False"
-                  ItemsSource="{Binding Source={StaticResource categoriesViewSource}}">
+                  ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}"
                                         Header="Category Name"
@@ -37,9 +35,12 @@
                 <DropShadowEffect ShadowDepth="10"/>
             </Border.Effect>
             <StackPanel Orientation="Horizontal" Margin="30 10 30 10">
-                <Button Click="Button_Click_Add" Content="Add"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-                <Button Click="Button_Click_Delete" Content="Delete"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-                <Button Click="Button_Click_Close" Content="Close"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                <Button Content="Add" Command="{Binding AddCategoryWindowCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                <Button Content="Delete" Command="{Binding DeleteCategoryCommand}"
+                        MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                <Button Content="Close" Command="{Binding CloseWindowCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
             </StackPanel>
         </Border>
     </Grid>

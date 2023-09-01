@@ -1,4 +1,4 @@
-﻿<Window x:Class="MyBudgetApp.GUI.MainWindow"
+﻿<Window x:Class="MyBudgetApp.GUI.TestWindow"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" mc:Ignorable="d"
@@ -7,8 +7,10 @@
         xmlns:local="clr-namespace:MyBudgetApp.GUI"
         xmlns:vm="clr-namespace:MyBudgetApp.ViewModels"
         Title="{Binding Title}" xmlns:p="clr-namespace:MyBudgetApp.Properties"
-        Height="768" Width="1024" WindowState="Maximized"
-        DataContext="{StaticResource GlobalViewModel}">
+        Height="768" Width="1024" WindowState="Maximized">
+    <Window.DataContext>
+        <vm:TestWindowViewModel/>
+    </Window.DataContext>
     <Grid x:Name="MainRoute">
         <TabControl Grid.Row="0" TabStripPlacement="Top">
             <TabItem Header="Spendings" VerticalAlignment="Top" Style="{StaticResource MaterialDesignTabItem}">
@@ -20,7 +22,7 @@
 
                     <DataGrid x:Name="OutputGrid"  BorderThickness="3" Background="LightGray"
                       AutoGenerateColumns="False" EnableRowVirtualization="True" Margin="20 20 20 10"
-                      ItemsSource="{Binding Spendings, Mode=TwoWay}" SelectedItem="{Binding SelectedSpending}"
+                      ItemsSource="{Binding Spendings}" SelectedItem="{Binding SelectedSpending}"
                       RowDetailsVisibilityMode="VisibleWhenSelected"
                       RenderTransformOrigin="0.488,0.251" HorizontalAlignment="Right"
                       CanUserAddRows="False" SelectionMode="Single"
@@ -109,16 +111,14 @@
                             <DropShadowEffect ShadowDepth="10"/>
                         </Border.Effect>
                         <StackPanel Orientation="Horizontal" Margin="30 10 30 10">
-                            <Button Content="Add" Command="{Binding AddSpendingCommand}"
+                            <Button Command="{Binding AddSpendingCommand}"
                                     CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
-                                    MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                                    Content="Add"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
                             <!--<Button Click="Button_Click_Clear"  Content="ClearBase"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>-->
-                            <Button Content="Delete" Command="{Binding DeleteSpendingCommand}"
-                                    MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
-                            <Button Content="Categories" Command="{Binding OpenCategoriewWindowCommand}"  
-                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
-                                    MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
-                            <!--<Button Click="Open_Test_Window" Content="Test"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>-->
+                            <Button Command="{Binding DeleteSpendingCommand}" Content="Delete"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
+                            <!--<Button Click="Button_Click_Refresh" Content="Refresh"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
+                            <Button Click="Open_Categories_Window" Content="Categories"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
+                            <Button Click="Open_Test_Window" Content="Test"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>-->
 
                         </StackPanel>
                     </Border>

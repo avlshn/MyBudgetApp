@@ -7,19 +7,23 @@
         xmlns:local="clr-namespace:MyBudgetApp"
         mc:Ignorable="d"
         Title="Add Category" Height="450" Width="800"
-        Closed="Window_Closed">
+        DataContext="{StaticResource GlobalViewModel}">
     <Grid>
         <StackPanel Orientation="Vertical" Margin="20 20 20 100">
-            <TextBox x:Name="CatNameTextBox" Margin="20" materialDesign:HintAssist.Hint="Category name"/>
-            <TextBox x:Name="CatLimitTextBox" Margin="20" materialDesign:HintAssist.Hint="Category spending limit"/> 
+            <TextBox Text="{Binding CategoryName, UpdateSourceTrigger=PropertyChanged}" Margin="20" materialDesign:HintAssist.Hint="Category name"/>
+            <TextBox Text="{Binding CategorySpendingLimit, UpdateSourceTrigger=PropertyChanged}" Margin="20" materialDesign:HintAssist.Hint="Category spending limit"/> 
         </StackPanel>
         <Border  Background="#e6faeb" Margin="20 0 20 10" VerticalAlignment="Bottom" Height="60" CornerRadius="30" BorderThickness="2,2,2,2" >
             <Border.Effect>
                 <DropShadowEffect ShadowDepth="10"/>
             </Border.Effect>
             <StackPanel Orientation="Horizontal" Margin="30 10 30 10" HorizontalAlignment="Right">
-                <Button Click="OnClickOk" Content="Ok"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20" IsDefault="True"></Button>
-                <Button Click="Button_Click_Cancel" Content="Cancel"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20" IsDefault="True"></Button>
+                <Button Content="Ok" Command="{Binding AddCategoryWindowOkCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                        MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20" IsDefault="True"/>
+                <Button Content="Cancel" Command="{Binding AddCategoryWindowCancelCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
+                        MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20" IsDefault="True"/>
             </StackPanel>
         </Border>
     </Grid>

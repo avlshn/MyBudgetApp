@@ -5,22 +5,31 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyBudgetApp"
+        xmlns:vm="clr-namespace:MyBudgetApp.ViewModels"
         mc:Ignorable="d"
-        Title="AddSpending" Height="450" Width="800">
+        Title="{Binding EditWindowTitle}" Height="450" Width="800"
+        DataContext="{StaticResource GlobalViewModel}">
     <Grid>
         <StackPanel Orientation="Vertical" Margin="20 20 20 100">
-            <TextBox x:Name="NameTextBox" Margin="20" materialDesign:HintAssist.Hint="Spending name"/>
-            <TextBox x:Name="AmountTextBox" Margin="20" materialDesign:HintAssist.Hint="Amount"/>
-            <ComboBox x:Name="CategoryBox"  Margin="20" materialDesign:HintAssist.Hint="Category" SelectionChanged="CategoryBox_SelectionChanged"/>
-            <DatePicker x:Name="DateBox"  Margin="20"  materialDesign:HintAssist.Hint="Choose date"/>
+            <TextBox Text="{Binding SpendingName}" Margin="20" materialDesign:HintAssist.Hint="Spending name"/>
+            <TextBox Text="{Binding SpendingValue}" Margin="20" materialDesign:HintAssist.Hint="Amount"/>
+            <ComboBox Margin="20" SelectedValue ="{Binding SpendingCategory, UpdateSourceTrigger=PropertyChanged}"
+                      materialDesign:HintAssist.Hint="Category"
+                      ItemsSource="{Binding Categories}"/>
+            <DatePicker SelectedDate="{Binding SpendingDate}"  Margin="20"  materialDesign:HintAssist.Hint="Choose date"/>
         </StackPanel>
         <Border  Background="#e6faeb" Margin="20 0 20 10" VerticalAlignment="Bottom" Height="60" CornerRadius="30" BorderThickness="2,2,2,2" >
             <Border.Effect>
                 <DropShadowEffect ShadowDepth="10"/>
             </Border.Effect>
             <StackPanel Orientation="Horizontal" Margin="30 10 30 10" HorizontalAlignment="Right">
-                <Button Click="OnClickOk" Content="Ok"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20" IsDefault="True"></Button>
-                <Button Click="Button_Click_Cancel" Content="Cancel"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20" IsDefault="True"></Button>
+                <Button Command="{Binding AddSpendingWindowOkCommand}" 
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" 
+                        Content="Ok"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" 
+                        FontSize="20" IsDefault="True"/>
+                <Button Command="{Binding AddSpendingWindowCancelCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                        Content="Cancel"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20" IsDefault="True"></Button>
             </StackPanel>
         </Border>
     </Grid>

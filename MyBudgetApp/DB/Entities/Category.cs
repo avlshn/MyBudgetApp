@@ -14,9 +14,10 @@ public class Category
     {
         Name = "Choose category name";
     }
-    public Category(string name)
+    public Category(string name, decimal? categoryLimit)
     {
         Name = name;
+        CategoryLimit = categoryLimit;
     }
     public int CategoryId { get; set; }
     public string Name { get; set; }

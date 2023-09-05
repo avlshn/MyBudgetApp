@@ -56,34 +56,8 @@ public partial class MainWindow : Window
     //    addSpending.ShowDialog();
 
     //}
-    //#region DataGridUpdate
-    ////public void DataGridUpdate()
-    ////{
-    ////    using (ApplicationContext db = new ApplicationContext())
-    ////    {
-    ////        var SpendingsList = from s in db.Spendings
-    ////                            join c in db.Categories
-    ////                            on s.CategoryId equals c.CategoryId
-    ////                            orderby s.EventDate
-    ////                            select new
-    ////                            {
-    ////                                Id = s.SpendingId,
-    ////                                Spending = s.Name,
-    ////                                Value = s.MoneyValue,
-    ////                                Category = c.Name,
-    ////                                Date = s.EventDate
-    ////                            };
-    ////        var outList = new List<onScreen>();
-    ////        foreach (var s in SpendingsList)
-    ////        {
-    ////            outList.Add(new onScreen(s.Id, s.Spending, s.Value, s.Category, s.Date ?? DateOnly.FromDateTime(DateTime.Now)));
-    ////        }
-    ////        OutputGrid.ItemsSource = outList;
-    ////    }
-    ////}
-    //#endregion
 
-    ////Debug option, remove later
+
     //private void Button_Click_Clear(object sender, RoutedEventArgs e)
     //{
     //    var result = MessageBox.Show("Are you sure you want to clear base?", "Clear base", 
@@ -97,21 +71,6 @@ public partial class MainWindow : Window
     //            db.Database.EnsureCreated();
     //        }
     //    }
-    //}
-
-    //private void Open_Categories_Window(object sender, RoutedEventArgs e)
-    //{
-    //    CategoriesWindow categoriesWindow = new CategoriesWindow();
-    //    categoriesWindow.Owner = this;
-    //    categoriesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-    //    categoriesWindow.ShowDialog();
-    //}
-    //private void Open_Test_Window(object sender, RoutedEventArgs e)
-    //{
-    //    TestWindow testWindow = new TestWindow();
-    //    testWindow.Owner = this;
-    //    testWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-    //    testWindow.ShowDialog();
     //}
 
     //private void StartupWindow_Loaded(object sender, RoutedEventArgs e)
@@ -145,20 +104,6 @@ public partial class MainWindow : Window
     //    }
     //}
 
-    //private void StartupWindow_Closed(object sender, EventArgs e)
-    //{
-    //    _context.SaveChanges();
-    //    Settings.Default.Save();
-    //}
-
-    //private void Button_Click_Refresh(object sender, RoutedEventArgs e)
-    //{
-    //    OutputGrid.CommitEdit();
-    //    _context.SaveChanges();
-    //    RefreshData();
-    //}
-
-
 
 
 
@@ -171,13 +116,7 @@ public partial class MainWindow : Window
 
     //    List<double> numbers, categoriesLimit;
     //    List<string> labels;
-    //    isShowZeroSpending = ShowZeroSpending.IsChecked == true;
-    //    List<CategorySammary>  CatList = ChartsCalculations.DonutGraphCalcs(DateFrom.SelectedDate,
-    //                                                 DateTo.SelectedDate,   
-    //                                                 isShowZeroSpending);
 
-    //    DonutGraph.Source = ChartsDrawing.DonutPlot(CatList);
-    //    StackedBarGraph.Source = ChartsDrawing.StackedBarPlot(CatList);
 
 
     //}
@@ -198,28 +137,7 @@ public partial class MainWindow : Window
     //    if (cvTasks != null) spendingsViewSource.GroupDescriptions.Clear();
     //}
 
-    //private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
-    //{
-    //    DateTime? dateFrom = GridDateFrom.SelectedDate,
-    //        dateTo = GridDateTo.SelectedDate;
 
-    //    if (dateFrom == null) dateFrom = DateTime.MinValue;
-    //    if (dateTo == null) dateTo = DateTime.MaxValue;
-
-    //    Spending s = e.Item as Spending;
-    //    if (s != null)
-    //    {
-    //        if ((s.EventDate >= dateFrom) && (s.EventDate <= dateTo))
-    //        {
-    //            if (SearchBox == null || s.Name.ToLower().Contains(SearchBox.Text.ToLower()))
-    //            {
-    //                e.Accepted = true;
-    //            }
-    //            else e.Accepted = false;
-    //        }
-    //        else e.Accepted = false;
-    //    }
-    //}
 
 
 
@@ -343,7 +261,7 @@ public partial class MainWindow : Window
     //            SecondRow.Height);
     //        FirstColomn.Width = new GridLength(StartupWindow.ActualWidth);
     //        SecondRow.Height = new GridLength(0);
-    //        DoubleAnimation heightAnimation = new DoubleAnimation(DonutGraph.ActualHeight, StartupWindow.ActualHeight*0.8, animationDuration, FillBehavior.HoldEnd);
+    //        DoubleAnimation heightAnimation = new DoubleAnimation(DonutGraph.ActualHeight, StartupWindow.ActualHeight * 0.8, animationDuration, FillBehavior.HoldEnd);
     //        DoubleAnimation widthAnimation = new DoubleAnimation(DonutGraph.ActualWidth, StartupWindow.ActualWidth, animationDuration, FillBehavior.HoldEnd);
     //        DonutGraph.BeginAnimation(HeightProperty, heightAnimation);
     //        DonutGraph.BeginAnimation(WidthProperty, widthAnimation);
@@ -364,7 +282,7 @@ public partial class MainWindow : Window
     //        DonutGraph.BeginAnimation(HeightProperty, heightAnimation);
     //        DonutGraph.BeginAnimation(WidthProperty, widthAnimation);
     //    }
-//}
+    //    }
 
 
 }

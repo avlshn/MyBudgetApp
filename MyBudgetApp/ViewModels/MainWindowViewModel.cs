@@ -1,22 +1,30 @@
 ﻿using DB;
 using DB.Entities;
 using Microsoft.EntityFrameworkCore;
+using MyBudgetApp.Charts;
 using MyBudgetApp.Commands;
+using MyBudgetApp.GUI;
+using MyBudgetApp.Properties;
 using MyBudgetApp.ViewModels.Base;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
+using static MyBudgetApp.Other.Constants;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MyBudgetApp.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
-
+        
         #region Properties Add spending window
 
         public bool IsCopySpendingMode { get; set; }
@@ -85,6 +93,57 @@ namespace MyBudgetApp.ViewModels
             set { Set(ref _categorySpendingLimit, value); }
         }
 
+
+
+
+        #endregion
+
+        #region Properties Spendings Filter
+
+        private string _spendingNameFilter;
+
+        public string SpendingNameFilter
+        {
+            get { return _spendingNameFilter; }
+            set 
+            { 
+                Set(ref _spendingNameFilter, value);
+                SpendingsCollection.Filter = CollectionViewSource_Filter;
+            }
+        }
+
+        private ICollectionView _spendingsCollection;
+
+        public ICollectionView SpendingsCollection
+        {
+            get { return _spendingsCollection; }
+            set { Set(ref _spendingsCollection, value); }
+        }
+
+        private DateTime? _filterDateFrom;
+
+        public DateTime? FilterDateFrom
+        {
+            get { return _filterDateFrom; }
+            set 
+            { 
+                Set(ref _filterDateFrom, value);
+                SpendingsCollection.Filter = CollectionViewSource_Filter;
+            }
+        }
+
+        private DateTime? _filterDateTo;
+
+        public DateTime? FilterDateTo
+        {
+            get { return _filterDateTo; }
+            set 
+            {
+                Set(ref _filterDateTo, value);
+                SpendingsCollection.Filter = CollectionViewSource_Filter;
+            }
+        }
+
         #endregion
 
         #region Properties Global
@@ -130,7 +189,66 @@ namespace MyBudgetApp.ViewModels
 
         #endregion
 
+        #region Properties plots
+
+        private BitmapImage _donutGraph;
+
+        public BitmapImage DonutGraph
+        {
+            get { return _donutGraph; }
+            set { Set(ref _donutGraph, value); }
+        }
+
+        private BitmapImage _stackedBarGraph;
+
+        public BitmapImage StackedBarGraph
+        {
+            get { return _stackedBarGraph; }
+            set { Set(ref _stackedBarGraph, value); }
+        }
+
+        public bool isShowZeroSpending
+        {
+            get => Settings.Default.ShowZeroSpendings;
+            set
+            {
+                Settings.Default.ShowZeroSpendings = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DateTime? _plotsDateFrom;
+
+        public DateTime? PlotsDateFrom
+        {
+            get { return _plotsDateFrom; }
+            set { Set(ref _plotsDateFrom, value); }
+        }
+
+        private DateTime? _plotsDateTo;
+
+        public DateTime? PlotsDateTo
+        {
+            get { return _plotsDateTo; }
+            set { Set(ref _plotsDateTo, value); }
+        }
+
+
+
+        #endregion
+
         #region Commands
+
+        #region DonutGraphClick
+
+        public ICommand DonutGraphClickCommand { get;}
+        private bool CanDonutGraphClickCommand(object o) => true;
+        private void OnDonutGraphClickCommand(object o)
+        {
+            
+        }
+
+        #endregion
 
         #region AddCategoryWindowOk
 
@@ -179,7 +297,7 @@ namespace MyBudgetApp.ViewModels
 
         private void OnDeleteCategoryCommand(object o)
         {
-            var result = MessageBox.Show($"Are you sure you want to delete \"{SelectedCategory.Name}\"?",
+            var result = MessageBox.Show($"Are you sure you want to delete \"{SelectedCategory?.Name}\"?",
             "Delete category?", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
@@ -320,6 +438,12 @@ namespace MyBudgetApp.ViewModels
             _context.Spendings.Load();
             Spendings = _context.Spendings.Local.ToObservableCollection();
             Categories = _context.Categories.Local.ToObservableCollection();
+            SpendingsCollection = CollectionViewSource.GetDefaultView(Spendings);
+
+            SpendingsCollection.Filter = CollectionViewSource_Filter;
+
+            PropertyChanged += ChartsDataRefresh;
+            ChartsDataRefresh(null, null);
 
             #region Commands ctor
             AddCategoryWindowCommand = new RelayCommand(OnAddCategoryWindowCommand, CanAddCategoryWindowCommand);
@@ -337,7 +461,42 @@ namespace MyBudgetApp.ViewModels
             #endregion
         }
 
+        private bool CollectionViewSource_Filter(object obj)
+        {
+            DateTime? dateFrom = FilterDateFrom,
+                dateTo = FilterDateTo;
 
+            if (dateFrom == null) dateFrom = DateTime.MinValue;
+            if (dateTo == null) dateTo = DateTime.MaxValue;
 
+            Spending? s = obj as Spending;
+            if (s != null)
+            {
+                if ((s.EventDate >= dateFrom) && (s.EventDate <= dateTo))
+                {
+                    if (SpendingNameFilter == null || s.Name.ToLower().Contains(SpendingNameFilter.ToLower()))
+                    {
+                        return true;
+                    }
+                    else return false;
+                }
+                else return false;
+            }
+            return false;
+        }
+
+        private void ChartsDataRefresh(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == "DonutGraph") return;
+            if (e?.PropertyName == "StackedBarGraph") return;
+            List<CategorySammary> CatList = ChartsCalculations.DonutGraphCalcs(PlotsDateFrom,
+                                             PlotsDateTo,
+                                             isShowZeroSpending);
+
+            DonutGraph = ChartsDrawing.DonutPlot(CatList);
+            StackedBarGraph = ChartsDrawing.StackedBarPlot(CatList);
+
+            
+        }
     }
 }

@@ -21,6 +21,7 @@
     <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.8" />
+    <PackageReference Include="Prism.Wpf" Version="8.1.97" />
     <PackageReference Include="ScottPlot" Version="4.1.65" />
   </ItemGroup>
 
@@ -37,6 +38,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="GUI\Controls\" />
   </ItemGroup>
 
 </Project>

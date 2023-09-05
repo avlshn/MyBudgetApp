@@ -6,25 +6,87 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyBudgetApp.GUI"
         xmlns:vm="clr-namespace:MyBudgetApp.ViewModels"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:prism="http://prismlibrary.com"
         Title="{Binding Title}" xmlns:p="clr-namespace:MyBudgetApp.Properties"
         Height="768" Width="1024" WindowState="Maximized"
         DataContext="{StaticResource GlobalViewModel}">
     <Grid x:Name="MainRoute">
         <TabControl Grid.Row="0" TabStripPlacement="Top">
             <TabItem Header="Spendings" VerticalAlignment="Top" Style="{StaticResource MaterialDesignTabItem}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="70" />
-                    </Grid.RowDefinitions>
+                <DockPanel>
+                    <Border  Background="#e6faeb" Grid.Row="1" Margin="20 0 20 10" 
+                             VerticalAlignment="Bottom" MinHeight="60" CornerRadius="30"
+                             BorderThickness="2,2,2,2" Name="BottomBorder"
+                             DockPanel.Dock="Bottom">
+                        <Border.Effect>
+                            <DropShadowEffect ShadowDepth="10"/>
+                        </Border.Effect>
+                        <StackPanel Orientation="Horizontal" Margin="30 10 30 10">
+                            <Button Content="Add" Command="{Binding AddSpendingCommand}"
+                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                                    MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
+                            <!--<Button Click="Button_Click_Clear"  Content="ClearBase"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>-->
+                            <Button Content="Delete" Command="{Binding DeleteSpendingCommand}"
+                                    MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
+                            <Button Content="Categories" Command="{Binding OpenCategoriewWindowCommand}"  
+                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                                    MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
+                            <!--<Button Click="Open_Test_Window" Content="Test"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>-->
 
-                    <DataGrid x:Name="OutputGrid"  BorderThickness="3" Background="LightGray"
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Name="SidePanel" DockPanel.Dock="Left"
+                        Width="10" Background="#aad3f0"
+                                Margin="0 0 0 10">
+
+                        <StackPanel.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Width"
+                                                         To="200" Duration="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Width"
+                                                         To="10" Duration="0:0:0.5"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </StackPanel.Triggers>
+                        <TextBox MinWidth="5" Text="{Binding SpendingNameFilter, UpdateSourceTrigger=PropertyChanged}" 
+                                 Height="30" Margin="5"
+                                 FontSize="16" Background="#e6f5ed"
+                                 materialDesign:HintAssist.Hint="Search by name"/>
+                        <CheckBox   Content="Group by category" 
+                                  
+                                  Height="40" Margin="5" VerticalContentAlignment="Center"
+                                  IsChecked="{Binding Source={x:Static p:Settings.Default}, Path = GroupSpendings, Mode=TwoWay}"/>
+                        <TextBlock Text="Select the dates to filter spendings" VerticalAlignment="Center" HorizontalAlignment="Center" MinWidth="3"/>
+                        <DatePicker SelectedDate="{Binding FilterDateFrom}" Margin="10" MinWidth="3" 
+                                    materialDesign:HintAssist.Hint="From"
+                                    />
+                        <DatePicker SelectedDate="{Binding FilterDateTo}" Margin="10" MinWidth="3" 
+                                    materialDesign:HintAssist.Hint="To"
+                                    />
+                        <Button Content="Clear" Style="{DynamicResource MaterialDesignFlatDarkButton}"
+                                BorderThickness="1" />
+
+
+                    </StackPanel>
+
+                    <DataGrid x:Name="SpendingsGrid"  BorderThickness="3" Background="LightGray"
                       AutoGenerateColumns="False" EnableRowVirtualization="True" Margin="20 20 20 10"
-                      ItemsSource="{Binding Spendings, Mode=TwoWay}" SelectedItem="{Binding SelectedSpending}"
+                      ItemsSource="{Binding SpendingsCollection, Mode=TwoWay}" SelectedItem="{Binding SelectedSpending}"
                       RowDetailsVisibilityMode="VisibleWhenSelected"
-                      RenderTransformOrigin="0.488,0.251" HorizontalAlignment="Right"
+                      RenderTransformOrigin="0.488,0.251" 
                       CanUserAddRows="False" SelectionMode="Single"
-                      Width="{Binding ActualWidth, ElementName=BottomBorder}">
+                      >
 
                         <DataGrid.GroupStyle>
 
@@ -43,7 +105,7 @@
                                                             </DockPanel>
                                                         </Expander.Header>
                                                         <Expander.Content>
-                                                            <ItemsPresenter />
+                                                            <ItemsPresenter/>
                                                         </Expander.Content>
                                                     </Expander>
                                                 </ControlTemplate>
@@ -70,8 +132,7 @@
                                         Header="Money spent"
                                         Width="SizeToHeader"/>
                             <DataGridComboBoxColumn
-                                        SelectedValueBinding="{Binding spendingCategory}"
-                                        SelectedValuePath="spendingCategory"
+
                                         DisplayMemberPath="Name"
                                         Header="Spending Category"
                                         Width="SizeToHeader">
@@ -102,29 +163,10 @@
                         </DataGrid.Columns>
 
                     </DataGrid>
-                    <Border  Background="#e6faeb" Grid.Row="1" Margin="20 0 20 10" 
-                             VerticalAlignment="Bottom" MinHeight="60" CornerRadius="30"
-                             BorderThickness="2,2,2,2" Name="BottomBorder">
-                        <Border.Effect>
-                            <DropShadowEffect ShadowDepth="10"/>
-                        </Border.Effect>
-                        <StackPanel Orientation="Horizontal" Margin="30 10 30 10">
-                            <Button Content="Add" Command="{Binding AddSpendingCommand}"
-                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
-                                    MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-                            <!--<Button Click="Button_Click_Clear"  Content="ClearBase"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>-->
-                            <Button Content="Delete" Command="{Binding DeleteSpendingCommand}"
-                                    MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
-                            <Button Content="Categories" Command="{Binding OpenCategoriewWindowCommand}"  
-                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
-                                    MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
-                            <!--<Button Click="Open_Test_Window" Content="Test"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>-->
 
-                        </StackPanel>
-                    </Border>
-                </Grid>
+                </DockPanel>
             </TabItem>
-            <!--<TabItem Header="Statistics">
+            <TabItem Header="Statistics">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40*" Name="FirstColomn"/>
@@ -135,27 +177,24 @@
                         <RowDefinition Height="50*" Name="SecondRow"/>
                     </Grid.RowDefinitions>
 
-                    <Image x:Name="DonutGraph" Grid.Column="0" Grid.Row="0"
-                           MouseLeftButtonUp="DonutGraph_MouseLeftButtonUp"
+                    <Image Name="DonutGraph" 
+                           Source="{Binding DonutGraph, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="0"
                            VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                    <Image x:Name="StackedBarGraph" Grid.Column="1" Grid.Row="0" 
-                           MouseLeftButtonUp="StackedBarGraph_MouseLeftButtonUp" 
+                    <Image Source="{Binding StackedBarGraph, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="0" 
                            VerticalAlignment="Top" HorizontalAlignment="Right"/>
 
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Width="40" Text="   from" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            <DatePicker x:Name="DateFrom" Margin="10" Width="100"/>
+                            <DatePicker SelectedDate="{Binding PlotsDateFrom}" Margin="10" Width="100"/>
                             <TextBlock Width="40" Text="   to" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            <DatePicker x:Name="DateTo" Margin="10" Width="100"/>
+                            <DatePicker SelectedDate="{Binding PlotsDateTo}" Margin="10" Width="100"/>
                             <TextBlock Text="  Select the dates for which the report is required" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            
+                            
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox x:Name="ShowZeroSpending" Width="30" HorizontalAlignment="Left"
-                                      IsChecked="{Binding Source={x:Static p:Settings.Default}, Path = ShowZeroSpendings, Mode=TwoWay}"/>
-                            <TextBlock Text="Show zero spendings"/>
-                        </StackPanel>
-
+                        <CheckBox Content="Show zero spendings" MinWidth="30" HorizontalAlignment="Left"
+                                      IsChecked="{Binding isShowZeroSpending}"/>
                     </StackPanel>
                     <Border  Background="#e6faeb" Grid.Row="1" Grid.ColumnSpan="2" Margin="20 0 20 10" 
                              VerticalAlignment="Bottom" MinHeight="60" CornerRadius="30" 
@@ -163,14 +202,14 @@
                         <Border.Effect>
                             <DropShadowEffect ShadowDepth="10"/>
                         </Border.Effect>
-                        <StackPanel Orientation="Horizontal" Margin="30 10 30 10">
+                        <!--<StackPanel Orientation="Horizontal" Margin="30 10 30 10">
                             <Button Click="Button_Click_Refresh" Content="Refresh"  
                                         MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" 
                                         FontSize="20"></Button>
-                        </StackPanel>
+                        </StackPanel>-->
                     </Border>
                 </Grid>
-            </TabItem>-->
+            </TabItem>
 
         </TabControl>
     </Grid>

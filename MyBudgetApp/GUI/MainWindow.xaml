@@ -8,9 +8,14 @@
         xmlns:vm="clr-namespace:MyBudgetApp.ViewModels"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:prism="http://prismlibrary.com"
+        xmlns:other="clr-namespace:MyBudgetApp.Other"
         Title="{Binding Title}" xmlns:p="clr-namespace:MyBudgetApp.Properties"
         Height="768" Width="1024" WindowState="Maximized"
         DataContext="{StaticResource GlobalViewModel}">
+    <i:Interaction.Behaviors>
+        <other:ReadOnlyPropertyToModelBindingBehavior ModelProperty="{Binding WindowHeight}" ReadOnlyDependencyProperty="{Binding ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
+        <other:ReadOnlyPropertyToModelBindingBehavior ModelProperty="{Binding WindowWidth}" ReadOnlyDependencyProperty="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
+    </i:Interaction.Behaviors>
     <Grid x:Name="MainRoute">
         <TabControl Grid.Row="0" TabStripPlacement="Top">
             <TabItem Header="Spendings" VerticalAlignment="Top" Style="{StaticResource MaterialDesignTabItem}">
@@ -169,19 +174,32 @@
             <TabItem Header="Statistics">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40*" Name="FirstColomn"/>
-                        <ColumnDefinition Width="60*" />
+                        <ColumnDefinition Width="{Binding FirstColomn}" />
+                        <ColumnDefinition Width="{Binding SecondColomn}" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50*"/>
-                        <RowDefinition Height="50*" Name="SecondRow"/>
+                        <RowDefinition Height="{Binding SecondRow}" />
                     </Grid.RowDefinitions>
 
-                    <Image Name="DonutGraph" 
-                           Source="{Binding DonutGraph, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="0"
-                           VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                    <Image Source="{Binding StackedBarGraph, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="0" 
-                           VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                        <Hyperlink Command="{Binding DonutGraphClickCommand}" TextDecorations="{x:Null}"
+                                   CommandParameter="{Binding ElementName=DonutGr}">
+                           <Image Name="DonutGr" 
+                               Source="{Binding DonutGraph, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Hyperlink>
+                    </TextBlock>
+
+
+                    <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right">
+                        <Hyperlink Command="{Binding StackedBarClickCommand}" TextDecorations="{x:Null}"
+                                   CommandParameter="{Binding ElementName=StackedBarGr}"
+                                   >
+                           <Image Name="StackedBarGr" Source="{Binding StackedBarGraph, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Hyperlink>
+                    </TextBlock>
+                    
+
 
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
                         <StackPanel Orientation="Horizontal">

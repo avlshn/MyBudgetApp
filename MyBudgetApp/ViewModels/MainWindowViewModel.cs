@@ -3,35 +3,33 @@ using DB.Entities;
 using Microsoft.EntityFrameworkCore;
 using MyBudgetApp.Charts;
 using MyBudgetApp.Commands;
-using MyBudgetApp.GUI;
+using MyBudgetApp.Other;
 using MyBudgetApp.Properties;
 using MyBudgetApp.ViewModels.Base;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using static MyBudgetApp.Other.Constants;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MyBudgetApp.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
-        
+
         #region Properties Add spending window
 
         public bool IsCopySpendingMode { get; set; }
 
         public string EditWindowTitle
         {
-            get 
+            get
             {
                 if (IsCopySpendingMode) return "Edit spending";
                 else return "Add spending";
@@ -105,8 +103,8 @@ namespace MyBudgetApp.ViewModels
         public string SpendingNameFilter
         {
             get { return _spendingNameFilter; }
-            set 
-            { 
+            set
+            {
                 Set(ref _spendingNameFilter, value);
                 SpendingsCollection.Filter = CollectionViewSource_Filter;
             }
@@ -125,8 +123,8 @@ namespace MyBudgetApp.ViewModels
         public DateTime? FilterDateFrom
         {
             get { return _filterDateFrom; }
-            set 
-            { 
+            set
+            {
                 Set(ref _filterDateFrom, value);
                 SpendingsCollection.Filter = CollectionViewSource_Filter;
             }
@@ -137,7 +135,7 @@ namespace MyBudgetApp.ViewModels
         public DateTime? FilterDateTo
         {
             get { return _filterDateTo; }
-            set 
+            set
             {
                 Set(ref _filterDateTo, value);
                 SpendingsCollection.Filter = CollectionViewSource_Filter;
@@ -149,8 +147,8 @@ namespace MyBudgetApp.ViewModels
         #region Properties Global
 
         private readonly ApplicationContext _context = new ApplicationContext();
-        
-        
+
+
         private ObservableCollection<Spending> _spendings;
         public ObservableCollection<Spending> Spendings
         {
@@ -158,7 +156,7 @@ namespace MyBudgetApp.ViewModels
             set { Set(ref _spendings, value); }
         }
 
-        
+
         private ObservableCollection<Category> _categories;
 
         public ObservableCollection<Category> Categories
@@ -168,7 +166,7 @@ namespace MyBudgetApp.ViewModels
         }
 
         public string Title { get; set; } = "test";
-        
+
 
         private Spending _selectedSpending;
 
@@ -237,15 +235,140 @@ namespace MyBudgetApp.ViewModels
 
         #endregion
 
+        #region Properties animation
+
+        public bool isImageEnlarged { get; set; } = false;
+        private BeforeAnimation donut;
+        private BeforeAnimation stackedBar;
+        private Duration animationDuration = new Duration(TimeSpan.FromSeconds(ANIMATION_DURATION));
+
+        private GridLength _firstColomn;
+
+        public GridLength FirstColomn
+        {
+            get { return _firstColomn; }
+            set { Set(ref _firstColomn, value); }
+        }
+
+        private GridLength _secondColomn;
+
+        public GridLength SecondColomn
+        {
+            get { return _secondColomn; }
+            set { Set(ref _secondColomn, value); }
+        }
+
+        private GridLength _secondRow;
+
+        public GridLength SecondRow
+        {
+            get { return _secondRow; }
+            set { Set(ref _secondRow, value); }
+        }
+
+        private double _windowHeight;
+
+        public double WindowHeight
+        {
+            get { return _windowHeight; }
+            set { Set(ref _windowHeight, value); }
+        }
+
+        private double _windowWidth;
+
+        public double WindowWidth
+        {
+            get { return _windowWidth; }
+            set { Set(ref _windowWidth, value); }
+        }
+
+
+        #endregion
+
         #region Commands
+        #region StackedBarClick
+
+        public ICommand StackedBarClickCommand { get; }
+        private bool CanStackedBarClickCommand(object o) => true;
+        private void OnStackedBarClickCommand(object o)
+        {
+            Image StackedBar = o as Image;
+            if (!isImageEnlarged)
+            {
+                stackedBar = new BeforeAnimation(
+                            StackedBar.ActualHeight,
+                            StackedBar.ActualWidth,
+                            FirstColomn,
+                            SecondRow);
+
+                FirstColomn = new GridLength(0);
+                SecondRow = new GridLength(0);
+                DoubleAnimation heightAnimation = new DoubleAnimation(StackedBar.ActualHeight, WindowHeight, animationDuration, FillBehavior.HoldEnd);
+                DoubleAnimation widthAnimation = new DoubleAnimation(StackedBar.ActualWidth, WindowWidth, animationDuration, FillBehavior.HoldEnd);
+                StackedBar.BeginAnimation(FrameworkElement.HeightProperty, heightAnimation);
+                StackedBar.BeginAnimation(FrameworkElement.WidthProperty, widthAnimation);
+                isImageEnlarged = true;
+            }
+            else
+            {
+                DoubleAnimation heightAnimation = new DoubleAnimation(StackedBar.ActualHeight, stackedBar.imageHeight, animationDuration, FillBehavior.HoldEnd);
+                DoubleAnimation widthAnimation = new DoubleAnimation(StackedBar.ActualWidth, stackedBar.imageWidth, animationDuration, FillBehavior.HoldEnd);
+
+                heightAnimation.Completed += (s, e) =>
+                                {
+                                    isImageEnlarged = false;
+                                    FirstColomn = new GridLength(FIRST_COLOMN_WIDTH_PERCENTAGE, GridUnitType.Star);
+                                    SecondRow = new GridLength(SECOND_ROW_HEIGHT_PERCANTAGE, GridUnitType.Star);
+                                    StackedBar.BeginAnimation(FrameworkElement.HeightProperty, null);
+                                    StackedBar.BeginAnimation(FrameworkElement.WidthProperty, null);
+                                };
+                StackedBar.BeginAnimation(FrameworkElement.HeightProperty, heightAnimation);
+                StackedBar.BeginAnimation(FrameworkElement.WidthProperty, widthAnimation);
+
+
+
+            }
+        }
+        #endregion
 
         #region DonutGraphClick
 
-        public ICommand DonutGraphClickCommand { get;}
+        public ICommand DonutGraphClickCommand { get; }
         private bool CanDonutGraphClickCommand(object o) => true;
         private void OnDonutGraphClickCommand(object o)
         {
-            
+            Image Donut = o as Image;
+
+            if (!isImageEnlarged)
+            {
+                donut = new BeforeAnimation(
+                    Donut.ActualHeight,
+                    Donut.ActualWidth,
+                    FirstColomn,
+                    SecondRow);
+                SecondColomn = new GridLength(0);
+                SecondRow = new GridLength(0);
+                DoubleAnimation heightAnimation = new DoubleAnimation(Donut.ActualHeight, WindowHeight * 0.8, animationDuration, FillBehavior.HoldEnd);
+                DoubleAnimation widthAnimation = new DoubleAnimation(Donut.ActualWidth, WindowWidth, animationDuration, FillBehavior.HoldEnd);
+                Donut.BeginAnimation(FrameworkElement.HeightProperty, heightAnimation);
+                Donut.BeginAnimation(FrameworkElement.WidthProperty, widthAnimation);
+                isImageEnlarged = true;
+            }
+            else
+            {
+                DoubleAnimation heightAnimation = new DoubleAnimation(Donut.ActualHeight, donut.imageHeight, animationDuration, FillBehavior.HoldEnd);
+                DoubleAnimation widthAnimation = new DoubleAnimation(Donut.ActualWidth, donut.imageWidth, animationDuration, FillBehavior.HoldEnd);
+                heightAnimation.Completed += (s, e) =>
+                {
+                    isImageEnlarged = false;
+                    SecondColomn = new GridLength(60, GridUnitType.Star);
+                    SecondRow = new GridLength(SECOND_ROW_HEIGHT_PERCANTAGE, GridUnitType.Star);
+                    Donut.BeginAnimation(FrameworkElement.HeightProperty, null);
+                    Donut.BeginAnimation(FrameworkElement.WidthProperty, null);
+                };
+                Donut.BeginAnimation(FrameworkElement.HeightProperty, heightAnimation);
+                Donut.BeginAnimation(FrameworkElement.WidthProperty, widthAnimation);
+            }
         }
 
         #endregion
@@ -256,7 +379,7 @@ namespace MyBudgetApp.ViewModels
 
         private bool CanAddCategoryWindowOkCommand(object o)
         {
-            if ((CategoryName != null && CategoryName.Length>0) && 
+            if ((CategoryName != null && CategoryName.Length > 0) &&
                 (CategorySpendingLimit != null && CategorySpendingLimit >= 0)) return true;
             else return false;
         }
@@ -322,7 +445,7 @@ namespace MyBudgetApp.ViewModels
         #endregion
 
         #region CloseWindow
-        public ICommand CloseWindowCommand { get;}
+        public ICommand CloseWindowCommand { get; }
         private bool CanCloseWindowCommand(object o) => true;
         private void OnCloseWindowCommand(object o) => ((Window)o).Close();
         #endregion
@@ -376,7 +499,7 @@ namespace MyBudgetApp.ViewModels
             Spendings.Add(new Spending
             {
                 Name = SpendingName,
-                MoneyValue = SpendingValue ?? 0 ,
+                MoneyValue = SpendingValue ?? 0,
                 spendingCategory = SpendingCategory,
                 EventDate = SpendingDate ?? DateTime.Now
             });
@@ -457,9 +580,22 @@ namespace MyBudgetApp.ViewModels
             AddCategoryWindowOkCommand = new RelayCommand(OnAddCategoryWindowOkCommand, CanAddCategoryWindowOkCommand);
             AddCategoryWindowCancelCommand = new RelayCommand(OnAddCategoryWindowCancelCommand, CanAddCategoryWindowCancelCommand);
             DeleteCategoryCommand = new RelayCommand(OnDeleteCategoryCommand, CanDeleteCategoryCommand);
+            DonutGraphClickCommand = new RelayCommand(OnDonutGraphClickCommand, CanDonutGraphClickCommand);
+            StackedBarClickCommand = new RelayCommand(OnStackedBarClickCommand, CanStackedBarClickCommand);
+            #endregion
+
+            #region Colomns and rows
+
+            FirstColomn = new(FIRST_COLOMN_WIDTH_PERCENTAGE, GridUnitType.Star);
+            SecondColomn = new(60, GridUnitType.Star);
+            SecondRow = new(SECOND_ROW_HEIGHT_PERCANTAGE, GridUnitType.Star);
 
             #endregion
         }
+
+        #region Functions
+
+
 
         private bool CollectionViewSource_Filter(object obj)
         {
@@ -496,7 +632,8 @@ namespace MyBudgetApp.ViewModels
             DonutGraph = ChartsDrawing.DonutPlot(CatList);
             StackedBarGraph = ChartsDrawing.StackedBarPlot(CatList);
 
-            
+
         }
     }
+    #endregion
 }

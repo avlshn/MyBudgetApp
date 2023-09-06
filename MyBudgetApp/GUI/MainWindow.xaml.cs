@@ -20,7 +20,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MyBudgetApp.GUI;
 
-//public record BeforeAnimation(double imageHeight, double imageWidth, GridLength colomnWidth, GridLength rowHeight);
+
 /// <summary>
 /// Логика взаимодействия для MainWindow.xaml
 /// </summary>
@@ -28,8 +28,6 @@ public partial class MainWindow : Window
 {
 
     //private readonly ApplicationContext _context = new();
-    //public CollectionViewSource spendingsViewSource;
-    //private Spending? SelectedSpending;
     //private bool isShowZeroSpending,
     //             isImageEnlarged = false,
     //             isPanelExtended = false;
@@ -48,31 +46,6 @@ public partial class MainWindow : Window
 
     }
 
-    //private void OnClickAdd(object sender, RoutedEventArgs e)
-    //{
-    //    AddSpending addSpending = new AddSpending();
-    //    addSpending.Owner = this;
-    //    addSpending.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-    //    addSpending.ShowDialog();
-
-    //}
-
-
-    //private void Button_Click_Clear(object sender, RoutedEventArgs e)
-    //{
-    //    var result = MessageBox.Show("Are you sure you want to clear base?", "Clear base", 
-    //        MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-    //    if (result == MessageBoxResult.Yes)
-    //    {
-    //        using (ApplicationContext db = new ApplicationContext())
-    //        {
-    //            db.Database.EnsureDeleted();
-    //            db.Database.EnsureCreated();
-    //        }
-    //    }
-    //}
-
     //private void StartupWindow_Loaded(object sender, RoutedEventArgs e)
     //{
 
@@ -90,33 +63,6 @@ public partial class MainWindow : Window
     //            spendingsViewSource.GroupDescriptions.Add(new PropertyGroupDescription("spendingCategory"));
     //    }
     //}
-
-    //private void Button_Click_Delete(object sender, RoutedEventArgs e)
-    //{
-    //    var result = MessageBox.Show($"Are you sure you want to delete \"{((Spending)OutputGrid.SelectedItem).Name}\"?",
-    //        "Delete spending?", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-    //    if (result == MessageBoxResult.Yes)
-    //    {
-    //        _context.Spendings.Remove((Spending)OutputGrid.SelectedItem);
-    //        RefreshData();
-    //        _context.SaveChanges();
-    //    }
-    //}
-
-
-
-
-    //public void RefreshData()
-    //{
-    //    _context.Categories.Load();
-    //    _context.Spendings.Load();
-
-    //    DataGridBox.ItemsSource = _context.Categories.ToList();
-
-    //    List<double> numbers, categoriesLimit;
-    //    List<string> labels;
-
 
 
     //}
@@ -141,48 +87,7 @@ public partial class MainWindow : Window
 
 
 
-    //private void SidePanel_MouseEnter(object sender, MouseEventArgs e)
-    //{
-    //    if (!isPanelExtended)
-    //    {
-    //        initialGridWidth = OutputGrid.ActualWidth;
-    //        DoubleAnimation panelExtend = new(), dataGridExtend = new();
 
-    //        panelExtend.To = SIDE_PANEL_WIDTH;
-    //        panelExtend.Duration = animationDuration;
-    //        dataGridExtend.From = OutputGrid.ActualWidth;
-    //        dataGridExtend.To = OutputGrid.ActualWidth - SIDE_PANEL_WIDTH;
-    //        dataGridExtend.Duration = animationDuration;
-
-    //        SidePanel.BeginAnimation(WidthProperty, panelExtend);
-    //        OutputGrid.BeginAnimation(WidthProperty, dataGridExtend);
-
-    //        isPanelExtended = true;
-    //    }   
-    //}
-
-    //private void FilterChanged(object sender, TextChangedEventArgs e)
-    //{
-    //    CollectionViewSource.GetDefaultView(OutputGrid.ItemsSource).Refresh();
-    //}
-
-    //private void FilterChanged(object sender, SelectionChangedEventArgs e)
-    //{
-    //    //Calculating all spendings for selected period
-    //    List<CategorySammary> CatList = ChartsCalculations.DonutGraphCalcs(GridDateFrom.SelectedDate, GridDateTo.SelectedDate, true);
-    //    foreach (var c in CatList)
-    //    {
-    //        Category? cat = _context.Categories.SingleOrDefault(p => p.CategoryId == c.ID);
-    //        if (cat != null)
-    //        {
-    //            cat.CategoryValue = (Decimal)c.Value;
-    //        }
-    //    }
-
-    //    _context.SaveChanges();
-
-    //    CollectionViewSource.GetDefaultView(OutputGrid.ItemsSource).Refresh();
-    //}
 
     //private void Button_Click_Clear_Date_Filter(object sender, RoutedEventArgs e)
     //{
@@ -190,25 +95,6 @@ public partial class MainWindow : Window
     //    GridDateTo.SelectedDate = null;
     //}
 
-    //private void SidePanel_MouseLeave(object sender, MouseEventArgs e)
-    //{
-    //    if (isPanelExtended)
-    //    {
-    //        Duration reverseDuration = new Duration(TimeSpan.FromSeconds(ANIMATION_DURATION*(initialGridWidth- OutputGrid.ActualWidth)/ SIDE_PANEL_WIDTH));
-    //        DoubleAnimation panelExtend = new DoubleAnimation(SidePanel.ActualWidth, SIDE_PANEL_MINIMIZED_WIDTH, reverseDuration);
-    //        DoubleAnimation dataGridExtend = new DoubleAnimation(OutputGrid.ActualWidth, initialGridWidth, reverseDuration);
-    //        dataGridExtend.Completed += (s, e) =>
-    //        {
-    //            SidePanel.BeginAnimation(WidthProperty, null);
-    //            OutputGrid.BeginAnimation(WidthProperty, null);
-    //            //OutputGrid.Width = Double.NaN;
-    //            isPanelExtended = false;
-    //        };
-    //        SidePanel.BeginAnimation(WidthProperty, panelExtend);
-    //        OutputGrid.BeginAnimation(WidthProperty, dataGridExtend);
-
-    //    }
-    //}
 
     //private void StackedBarGraph_MouseLeftButtonUp(object sender, MouseEventArgs e)
     //{
@@ -282,7 +168,7 @@ public partial class MainWindow : Window
     //        DonutGraph.BeginAnimation(HeightProperty, heightAnimation);
     //        DonutGraph.BeginAnimation(WidthProperty, widthAnimation);
     //    }
-    //    }
+    //}
 
 
 }

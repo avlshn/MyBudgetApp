@@ -31,7 +31,9 @@
                             <Button Content="Add" Command="{Binding AddSpendingCommand}"
                                     CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
                                     MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"></Button>
-                            <!--<Button Click="Button_Click_Clear"  Content="ClearBase"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>-->
+                            <Button Content="Copy" Command="{Binding CopySpendingCommand}"
+                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                                    MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
                             <Button Content="Delete" Command="{Binding DeleteSpendingCommand}"
                                     MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
                             <Button Content="Categories" Command="{Binding OpenCategoriewWindowCommand}"  
@@ -86,7 +88,7 @@
                     </StackPanel>
 
                     <DataGrid x:Name="SpendingsGrid"  BorderThickness="3" Background="LightGray"
-                      AutoGenerateColumns="False" EnableRowVirtualization="True" Margin="20 20 20 10"
+                      AutoGenerateColumns="False" EnableRowVirtualization="True" Margin="3"
                       ItemsSource="{Binding SpendingsCollection, Mode=TwoWay}" SelectedItem="{Binding SelectedSpending}"
                       RowDetailsVisibilityMode="VisibleWhenSelected"
                       RenderTransformOrigin="0.488,0.251" 
@@ -137,7 +139,7 @@
                                         Header="Money spent"
                                         Width="SizeToHeader"/>
                             <DataGridComboBoxColumn
-
+                                        SelectedValueBinding="{Binding spendingCategory}"
                                         DisplayMemberPath="Name"
                                         Header="Spending Category"
                                         Width="SizeToHeader">

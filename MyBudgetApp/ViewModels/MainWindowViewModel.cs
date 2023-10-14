@@ -16,12 +16,15 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 using static MyBudgetApp.Other.Constants;
 
 namespace MyBudgetApp.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
+
+        #region Properties
 
         #region Properties Add spending window
 
@@ -285,6 +288,8 @@ namespace MyBudgetApp.ViewModels
 
         #endregion
 
+        #endregion
+
         #region Commands
         #region StackedBarClick
 
@@ -483,7 +488,29 @@ namespace MyBudgetApp.ViewModels
         }
         #endregion
 
-        #region CopySpendingCommand
+        #region CopySpending
+
+        public ICommand CopySpendingCommand { get; }
+        private bool CanCopySpendingCommand(object o)
+        {
+            if (SelectedSpending != null) return true;
+            return false;
+        }
+
+        private void OnCopySpendingCommand(object o)
+        {
+            IsCopySpendingMode = true;
+
+            SpendingName = SelectedSpending.Name;
+            SpendingValue = SelectedSpending.MoneyValue;
+            SpendingCategory = SelectedSpending.spendingCategory;
+            SpendingDate = SelectedSpending.EventDate;
+
+            AddSpending addSpending = new AddSpending();
+            addSpending.Owner = (Window)o;
+            addSpending.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            addSpending.ShowDialog();
+        }
 
         #endregion
 
@@ -496,22 +523,21 @@ namespace MyBudgetApp.ViewModels
         }
         private void OnAddSpendingWindowOkCommand(object o)
         {
-            Spendings.Add(new Spending
-            {
-                Name = SpendingName,
-                MoneyValue = SpendingValue ?? 0,
-                spendingCategory = SpendingCategory,
-                EventDate = SpendingDate ?? DateTime.Now
-            });
-            _context.SaveChanges();
+                Spendings.Add(new Spending
+                {
+                    Name = SpendingName,
+                    MoneyValue = SpendingValue ?? 0,
+                    spendingCategory = SpendingCategory,
+                    EventDate = SpendingDate ?? DateTime.Now
+                });
+                _context.SaveChanges();
 
-            ((Window)o).Close();
+                ((Window)o).Close();
 
-            SpendingName = null;
-            SpendingValue = null;
-            SpendingCategory = null;
-            SpendingDate = null;
-
+                SpendingName = null;
+                SpendingValue = null;
+                SpendingCategory = null;
+                SpendingDate = null;
         }
 
         #endregion
@@ -572,6 +598,7 @@ namespace MyBudgetApp.ViewModels
             AddCategoryWindowCommand = new RelayCommand(OnAddCategoryWindowCommand, CanAddCategoryWindowCommand);
             CloseWindowCommand = new RelayCommand(OnCloseWindowCommand, CanCloseWindowCommand);
             AddSpendingWindowOkCommand = new RelayCommand(OnAddSpendingWindowOkCommand, CanAddSpendingWindowOkCommand);
+            CopySpendingCommand = new RelayCommand(OnCopySpendingCommand, CanCopySpendingCommand);
             SaveDbCommand = new RelayCommand(OnSaveDbCommand, CanSaveDbCommand);
             DeleteSpendingCommand = new RelayCommand(OnDeleteSpendingCommand, CanDeleteSpendingCommand);
             AddSpendingCommand = new RelayCommand(OnAddSpendingCommand, CanAddSpendingCommand);

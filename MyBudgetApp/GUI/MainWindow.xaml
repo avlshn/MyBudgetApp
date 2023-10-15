@@ -39,7 +39,9 @@
                             <Button Content="Categories" Command="{Binding OpenCategoriewWindowCommand}"  
                                     CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
                                     MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
-                            <!--<Button Click="Open_Test_Window" Content="Test"  MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>-->
+                            <Button Content="Connection settings" Command="{Binding OpenConnectionSettingsCommand}"
+                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
+                                    MinWidth="120" Style="{DynamicResource MaterialDesignFlatDarkButton}" FontSize="20"/>
 
                         </StackPanel>
                     </Border>

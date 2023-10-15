@@ -1,5 +1,6 @@
 ﻿using DB.Entities;
 using Microsoft.EntityFrameworkCore;
+using MyBudgetApp.Other;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,15 +17,14 @@ public class ApplicationContext : DbContext
 
     public ApplicationContext()
     {
-        //Database.EnsureDeletedAsync();
-        Database.EnsureCreatedAsync();
+        //Database.EnsureDeleted();
+        Database.EnsureCreated();
     }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source=helloapp.db").UseLazyLoadingProxies();
-
-        
+        //optionsBuilder.UseSqlite("Data Source=helloapp.db").UseLazyLoadingProxies();
+        ServerTypeSettings.Connections[MyBudgetApp.Properties.Settings.Default.ConnectionServerType].CreateDB(optionsBuilder);
     }
 }

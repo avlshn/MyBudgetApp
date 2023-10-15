@@ -5,32 +5,40 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyBudgetApp.GUI"
+        xmlns:converters="clr-namespace:MyBudgetApp.Converters"
         mc:Ignorable="d"
         Title="ConnectionSettings" Height="450" Width="400"
         DataContext="{StaticResource ConnectionViewModel}">
+    <Window.Resources>
+        <converters:BoolNotConverter x:Key="NotConverter"/>
+    </Window.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
             <Button Content="Test connection" Margin="5 5 120 5"/>
-            <Button Content="OK" Margin="5 5 5 5"/>
+            <Button Content="OK" Command="{Binding ConnectionSettingsOKCommand}" Margin="5 5 5 5"/>
             <Button Content="Cancel" Margin="5 5 5 5"/>
 
         </StackPanel>
 
         <StackPanel>
-            <TextBox Margin="10 5 10 5" Padding="2" materialDesign:HintAssist.Hint="Server"
-                     Text="{Binding ServerSetting}"/>
+            <TextBox Margin="10 30 10 5" Padding="2" materialDesign:HintAssist.Hint="Server"
+                     Text="{Binding ServerSetting}" IsEnabled="{Binding IsControlEnabledServer}"/>
             <TextBox Margin="10 20 10 5" Padding="2" materialDesign:HintAssist.Hint="Data Base"
                      Text="{Binding DataBaseSetting}"/>
-            <CheckBox Content="Use Windows Authentication" Margin="5 20 3 5"
-                      IsChecked="{Binding IsTrustedConnection}"/>
+            <CheckBox Content="Use Windows Authentication" Margin="5 20 3 5" IsEnabled="{Binding IsControlEnabledAuthentication}"
+                      IsChecked="{Binding IsTrustedConnection}" />
+            <CheckBox Content="Use Encryption" Margin="5 5 3 5" IsEnabled="{Binding IsControlEnabledEncryption}"
+                      IsChecked="{Binding IsEncryptedConnection}"/>
             <TextBox Margin="10 20 10 5" Padding="2" materialDesign:HintAssist.Hint="Login"
-                     IsEnabled="{Binding IsReadOnly}"/>
+                     IsEnabled="{Binding IsControlEnabledCredentials}"/>
             <PasswordBox    Margin="10 20 10 5" Padding="2"
                             materialDesign:PasswordBoxAssist.IsPasswordRevealed="False"
                             materialDesign:HintAssist.Hint="Password"
-                            IsEnabled="{Binding IsReadOnly}"/>
+                            IsEnabled="{Binding IsControlEnabledCredentials}"/>
             <ComboBox Margin="10 20 10 5" Padding="2" materialDesign:HintAssist.Hint="Conntection type"
-                      ItemsSource="{Binding SelectedServerType}"/>
+                      ItemsSource="{Binding ServerTypes}"
+                      SelectedItem="{Binding SelectedServerType}"
+                      />
         </StackPanel>
     </DockPanel>
 </Window>

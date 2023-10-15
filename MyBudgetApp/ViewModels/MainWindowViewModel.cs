@@ -3,6 +3,7 @@ using DB.Entities;
 using Microsoft.EntityFrameworkCore;
 using MyBudgetApp.Charts;
 using MyBudgetApp.Commands;
+using MyBudgetApp.GUI;
 using MyBudgetApp.Other;
 using MyBudgetApp.Properties;
 using MyBudgetApp.ViewModels.Base;
@@ -16,7 +17,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Xml.Linq;
 using static MyBudgetApp.Other.Constants;
 
 namespace MyBudgetApp.ViewModels
@@ -579,6 +579,18 @@ namespace MyBudgetApp.ViewModels
 
         #endregion
 
+        #region OpenConnectionSettings
+        public ICommand OpenConnectionSettingsCommand { get; }
+        private bool CanOpenConnectionSettingsCommand(object o) => true;
+        private void OnOpenConnectionSettingsCommand(object o)
+        {
+            ConnectionSettings connectionSettings = new ConnectionSettings();
+            connectionSettings.Owner = (Window)o;
+            connectionSettings.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            connectionSettings.ShowDialog();
+        }
+        #endregion    
+
         #endregion
 
         public MainWindowViewModel()
@@ -609,6 +621,7 @@ namespace MyBudgetApp.ViewModels
             DeleteCategoryCommand = new RelayCommand(OnDeleteCategoryCommand, CanDeleteCategoryCommand);
             DonutGraphClickCommand = new RelayCommand(OnDonutGraphClickCommand, CanDonutGraphClickCommand);
             StackedBarClickCommand = new RelayCommand(OnStackedBarClickCommand, CanStackedBarClickCommand);
+            OpenConnectionSettingsCommand = new RelayCommand(OnOpenConnectionSettingsCommand, CanOpenConnectionSettingsCommand);
             #endregion
 
             #region Colomns and rows

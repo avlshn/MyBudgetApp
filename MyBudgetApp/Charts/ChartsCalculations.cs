@@ -22,7 +22,7 @@ static internal class ChartsCalculations
 
         using (ApplicationContext _context = new ApplicationContext())
         {
-            _context.Spendings.LoadAsync();
+            _context.Spendings.Load();
             categories = _context.Categories.ToList();
 
             foreach (Category cat in categories)

@@ -14,9 +14,19 @@ namespace MyBudgetApp.Other
 
         public Action<DbContextOptionsBuilder> UseDBMode;
 
+        public bool isServerEnabled;
+        public bool isWindowsAuthenticationEnabled;
+        //public bool isServerEnabled;
+        //public bool isServerEnabled;
+
         public void CreateDB(DbContextOptionsBuilder optionsBuilder)
         {
             UseDBMode(optionsBuilder);
+        }
+
+        public override string ToString()
+        {
+            return DisplayName;
         }
 
 
